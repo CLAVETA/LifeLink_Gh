@@ -1,0 +1,47 @@
+from nicegui import ui
+
+# importing pages
+from pages.home import *
+from pages.about import *
+
+# hospital
+from pages.hospital.hospital_dashboard import *
+from pages.hospital.hospital_register import *
+
+# donor
+from pages.donor.donor_register import *
+
+# volunteer
+from pages.volunteer.volunteer_register import *
+
+
+
+#exposing static files
+app.add_static_files("/assets", "assets")
+
+# fonts
+
+
+
+def show_homepage():
+    home_page()
+
+
+def show_about():
+    about_page()
+
+
+def show_hospital_dashboard():
+    hospital_dashboard_page()
+
+def show_hospital_signup():
+    hospital_signup_page()
+    
+def show_donor_registration_page():
+    donor_registration_page()    
+
+def show_volunteer_signup_page():
+    volunteer_signup_page()
+
+
+ui.run(favicon="assets/favicon.ico", title="LifeLink")
