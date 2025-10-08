@@ -8,6 +8,7 @@ def show_navbar():
                 ui.label("LifeLink").classes("text-xl font-bold text-gray-700")
             with ui.row().classes("gap-6 mt-3 md:mt-0"):
                 ui.link("About","/about").classes("no-underline text-gray-700 hover:text-red transition")
+                ui.link("Education","/education").classes("no-underline text-gray-700 hover:text-red transition")
                 ui.link("Contact").classes("no-underline text-gray-700 hover:text-red transition")
                 ui.link("FAQs").classes("no-underline text-gray-700 hover:text-red transition")
             with ui.row().classes("gap-3 mt-3 md:mt-0"):
