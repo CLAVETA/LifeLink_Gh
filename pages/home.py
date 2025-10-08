@@ -11,8 +11,8 @@ def home_page():
         # Navbar
         show_navbar()
         # Hero
-        with ui.element("hero").classes("flex items-center justify-center w-full text-white bg-[url('/assets/hero.png')] bg-cover bg-center bg-black/60 bg-blend-overlay"):
-            with ui.column().classes("items-center w-full max-w-screen-lg text-center py-35 px-5"):
+        with ui.element("hero").classes("min-h-sceen flex items-center justify-center w-full text-white bg-[url('/assets/hero.png')] bg-cover bg-center bg-black/60 bg-blend-overlay"):
+            with ui.column().classes("items-center w-full max-w-screen-lg text-center py-20 px-5"):
                 ui.label("Connecting Donors, Saving Lives.").classes("text-2xl md:text-6xl font-bold")
                 ui.html(
                     content=(
@@ -21,7 +21,7 @@ def home_page():
                         "ensure timely access to life-saving blood for patients, especially those with<br>"
                         "sickle cell disease, by building a robust network of donors and providing critical<br>"
                         "information"
-                    ), sanitize=False).classes("text-base md:text-lg leading-relaxed")
+                    )).classes("text-base md:text-lg leading-relaxed")
                 with ui.row().classes("gap-4 mt-6"):
                     ui.button("Volunteer Signup").props("no-caps flat dense").classes("bg-red-600 text-white px-4 rounded-md hover:bg-red-500 transition")
                     ui.button("Learn About Sickle Cell").props("no-caps flat dense").classes("bg-[rgba(255,255,255,0.3)] text-white rounded-md px-4 hover:bg-[rgba(255,255,255,0.5)] transition")
