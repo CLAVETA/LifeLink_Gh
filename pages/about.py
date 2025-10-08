@@ -6,7 +6,7 @@ def about_page():
     ui.query(".nicegui-content").classes("m-0 p-0 gap-0")
     with ui.element("main").classes("min-h-screen w-full flex flex-col"):
         # Navbar
-        with ui.row().classes("flex flex-col md:flex-row items-center justify-between shadow-md w-full px-3 md:px-7 py-3"):
+        with ui.row().classes("flex flex-col md:flex-row items-center justify-between shadow-md w-full px-3 md:px-7 py-1"):
             with ui.row().classes("gap-0 space-x-0 items-center justify-center"):
                 ui.image("/assets/logo.png").classes("w-12 h-12")
                 ui.label("LifeLink").classes("text-xl font-bold text-gray-700")
@@ -15,7 +15,7 @@ def about_page():
                 ui.link("About","/about").classes("no-underline text-red-600 hover:text-red-500 transition")
                 ui.link("Contact").classes("no-underline text-gray-700 hover:text-red-600 transition")
             with ui.row().classes("gap-3 mt-3 md:mt-0"):
-                ui.button("Donate Now").props("no-caps flat dense").classes("bg-red-600 text-white rounded-md px-4")
+                ui.button("Donate Now", on_click=lambda: ui.navigate.to("/donor_registration")).props("no-caps flat dense").classes("bg-red-600 text-white rounded-md px-4")
         
         # Hero Section (About LifeLink)
         with ui.element("section").classes("flex flex-col items-center justify-center w-full py-10 px-5 text-center"):
@@ -27,7 +27,7 @@ def about_page():
                 )).classes("text-base md:text-lg text-gray-500")
 
         # Mission & Vision
-        with ui.row().classes("px-5 md:px-20 py-12 grid grid-cols-1 md:grid-cols-2 gap-10 items-start"):
+        with ui.row().classes("px-5  py-12 grid grid-cols-1 md:grid-cols-2 gap-10 items-start text-center flex items-center justify-center"):
             with ui.column().classes("text-center md:text-left"):
                 ui.label("Our Mission").classes("text-xl md:text-2xl font-semibold text-gray-800 mb-2")
                 ui.html(

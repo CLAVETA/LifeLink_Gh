@@ -13,13 +13,13 @@ def hospital_signup_page():
                 ui.image("/assets/logo.png").classes("w-12 h-12")
                 ui.label("LifeLink").classes("text-xl font-bold text-gray-700")
             with ui.row().classes("gap-6 mt-3 md:mt-0"):
-                ui.link("About").classes("no-underline text-gray-700 hover:text-red-500 transition")
+                ui.link("About","/about").classes("no-underline text-gray-700 hover:text-red-500 transition")
                 ui.link("How it works").classes("no-underline text-gray-700 hover:text-red-500 transition")
                 ui.link("Contact").classes("no-underline text-gray-700 hover:text-red-500 transition")
             with ui.row().classes("gap-3 mt-3 md:mt-0"):
                 ui.button("Signup").props("no-caps flat dense").classes("bg-red-600 text-white hover:bg-red-500 rounded-md px-4")
         # Signup form 
-        with ui.element("section").classes("flex-grow flex items-center justify-center w-full px-4"):
+        with ui.element("section").classes("flex-grow flex items-center justify-center w-full px-4 md:mt-5"):
             with ui.card().classes("w-full md:w-1/2 lg:w-1/3 p-6 bg-white shadow-md items-center rounded-md"):
                 ui.label("Hospital Signup").classes("text-xl md:text-2xl font-bold py-1 text-center")
 
@@ -43,10 +43,9 @@ def hospital_signup_page():
                             'By signing up, you agree to our '
                             '<span class="text-red-600">Terms of Service</span> and '
                             '<span class="text-red-600">Privacy Policy</span>.'
-                        ),
-                        sanitize=False,
+                        )
                     ).classes("text-sm text-center")
 
         # Footer 
-        with ui.row().classes("flex flex-col md:flex-row items-center justify-center px-7 w-full bg-gray-50 py-4 text-sm mt-auto text-gray-700"):
+        with ui.row().classes("flex flex-col md:flex-row items-center justify-center px-7 w-full bg-gray-50 py-4 text-sm md:mt-5 text-gray-700"):
             ui.label("© 2025 LifeLink. All rights reserved.").classes("mb-3 md:mb-0")

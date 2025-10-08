@@ -63,7 +63,7 @@ def education_page():
                         "It's a free health check-up (blood pressure, hemoglobin, etc.)."
                     ]:
                         # Use Font Awesome for bullet points to match style
-                        ui.html(f'<i class="fa-solid fa-circle-check text-red-500 mr-2"></i>{fact}', sanitize=False).classes("text-base text-gray-600 mb-2 flex items-start")
+                        ui.html(f'<i class="fa-solid fa-circle-check text-red-500 mr-2"></i>{fact}').classes("text-base text-gray-600 mb-2 flex items-start")
                     
                     ui.button("Find Donation Centers").props("no-caps").classes("mt-6 w-full bg-red-600 text-white rounded-md px-4 py-2 hover:bg-red-500 transition")
 
@@ -86,7 +86,7 @@ def education_page():
                         "Bone marrow transplants (in some cases).",
                     ]:
                          # Use Font Awesome for bullet points
-                        ui.html(f'<i class="fa-solid fa-square-poll-vertical text-red-500 mr-2"></i>{treatment}', sanitize=False).classes("text-base text-gray-600 mb-2 flex items-start")
+                        ui.html(f'<i class="fa-solid fa-square-poll-vertical text-red-500 mr-2"></i>{treatment}').classes("text-base text-gray-600 mb-2 flex items-start")
                         
                     ui.button("Get Comprehensive Guide", on_click=lambda: ui.navigate.to('/sicklecell_education')).props("no-caps").classes("mt-6 w-full bg-red-500 text-white rounded-md px-4 py-2 hover:bg-red-500 transition")
 
@@ -94,10 +94,10 @@ def education_page():
 
 
         # 4. Footer (Consistent with the style used in the other pages)
-       with ui.row().classes("flex flex-col md:flex-row items-center justify-between px-7 w-full bg-gray-50 py-5 text-sm mt-auto text-gray-500"):
-            ui.label("© 2025 LifeLink. All rights reserved.").classes("mb-3 md:mb-0")
-            with ui.row().classes("gap-6"):
-                ui.html('<i class="fa-brands fa-square-linkedin text-xl hover:text-red-600 transition"></i>', sanitize=False)
-                ui.html('<i class="fa-brands fa-instagram text-xl hover:text-red-600 transition"></i>', sanitize=False)
-                ui.html('<i class="fa-brands fa-facebook text-xl hover:text-red-600 transition"></i>', sanitize=False)
-        
+        with ui.row().classes("flex flex-col md:flex-row items-center justify-between px-7 w-full bg-gray-50 py-5 text-sm mt-auto text-gray-500"):
+                ui.label("© 2025 LifeLink. All rights reserved.").classes("mb-3 md:mb-0")
+                with ui.row().classes("gap-6"):
+                    ui.html('<i class="fa-brands fa-square-linkedin text-xl hover:text-red-600 transition"></i>')
+                    ui.html('<i class="fa-brands fa-instagram text-xl hover:text-red-600 transition"></i>')
+                    ui.html('<i class="fa-brands fa-facebook text-xl hover:text-red-600 transition"></i>')
+            

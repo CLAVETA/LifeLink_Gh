@@ -3,7 +3,7 @@ from nicegui import ui,app
 app.add_static_files("/assets","assets")
 
 
-@ui.page("/volunteer_signup_form")
+@ui.page("/volunteer_signup")
 def volunteer_signup_page():
     ui.query(".nicegui-content").classes("m-0 p-0 gap-0")
 
@@ -16,7 +16,7 @@ def volunteer_signup_page():
                 ui.image("/assets/logo.png").classes("w-12 h-12")
                 ui.label("LifeLink").classes("text-xl font-bold text-gray-700")
             with ui.row().classes("gap-6 mt-3 md:mt-0"):
-                ui.link("About").classes("no-underline text-gray-700 hover:text-red-500 transition")
+                ui.link("About","/about").classes("no-underline text-gray-700 hover:text-red-500 transition")
                 ui.link("How it works").classes("no-underline text-gray-700 hover:text-red-500 transition")
                 ui.link("Contact").classes("no-underline text-gray-700 hover:text-red-500 transition")
             with ui.row().classes("gap-3 mt-3 md:mt-0"):

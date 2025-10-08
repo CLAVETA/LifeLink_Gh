@@ -52,4 +52,4 @@ def show_education_page():
 def show_sicklecell_page():
     sicklecell_page()
 
-ui.run(favicon="assets/favicon.ico", title="LifeLink", port=5000)
+ui.run(favicon="assets/favicon.ico", title="LifeLink")
