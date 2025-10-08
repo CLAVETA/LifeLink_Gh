@@ -94,4 +94,10 @@ def education_page():
 
 
         # 4. Footer (Consistent with the style used in the other pages)
-        show_footer()
+       with ui.row().classes("flex flex-col md:flex-row items-center justify-between px-7 w-full bg-gray-50 py-5 text-sm mt-auto text-gray-500"):
+            ui.label("© 2025 LifeLink. All rights reserved.").classes("mb-3 md:mb-0")
+            with ui.row().classes("gap-6"):
+                ui.html('<i class="fa-brands fa-square-linkedin text-xl hover:text-red-600 transition"></i>', sanitize=False)
+                ui.html('<i class="fa-brands fa-instagram text-xl hover:text-red-600 transition"></i>', sanitize=False)
+                ui.html('<i class="fa-brands fa-facebook text-xl hover:text-red-600 transition"></i>', sanitize=False)
+        
