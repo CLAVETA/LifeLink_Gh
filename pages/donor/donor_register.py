@@ -1,4 +1,5 @@
 from nicegui import ui,app
+from components.footer import show_footer
 
 app.add_static_files("/assets","assets")
 
@@ -9,7 +10,7 @@ def donor_registration_page():
     with ui.element("main").classes("min-h-screen w-full flex flex-col"):
         # Navbar
         with ui.row().classes(
-            "flex flex-col md:flex-row items-center justify-between shadow-md w-full px-3 md:px-7 py-3"
+            "flex flex-col md:flex-row items-center justify-between shadow-md w-full px-3 md:px-7 py-1"
         ):
             with ui.row().classes("gap-0 items-center justify-center"):
                 ui.image("/assets/logo.png").classes("w-12 h-12")
@@ -19,7 +20,7 @@ def donor_registration_page():
                 ui.link("How it works").classes("no-underline text-gray-700 hover:text-red-500 transition")
                 ui.link("Contact").classes("no-underline text-gray-700 hover:text-red-500 transition")
             with ui.row().classes("gap-3 mt-3 md:mt-0"):
-                ui.button("Hospital Login").props("no-caps flat dense").classes("bg-pink-200 text-red hover:bg-red-500 rounded-md px-4")
+                ui.button("Hospital Login", on_click=lambda: ui.navigate.to("/hospital_signup")).props("no-caps flat dense").classes("bg-pink-200 text-red hover:bg-pink-300 rounded-md px-4")
         # Signup form 
         with ui.element("section").classes("flex-grow flex items-center justify-center w-full px-4"):
             with ui.card().classes("w-full md:w-[60%] lg:w-[50%] p-6 bg-white shadow-md text-gray-700 rounded-md items-center my-3"):
@@ -67,11 +68,11 @@ def donor_registration_page():
                         'By signing up, you agree to our '
                         '<span class="text-red-600">Terms of Service</span> and '
                         '<span class="text-red-600">Privacy Policy</span>.'
-                    ),
-                    sanitize=False,
+                    )
                 ).classes("text-sm text-center text-gray-700")
 
 
         # # Footer 
+        show_footer()
         # with ui.row().classes("flex flex-col md:flex-row items-center justify-center px-7 w-full bg-gray-50 py-4 text-sm mt-auto text-gray-700"):
         #     ui.label("© 2025 LifeLink. All rights reserved.").classes("mb-3 md:mb-0")

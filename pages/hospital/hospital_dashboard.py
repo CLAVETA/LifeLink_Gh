@@ -11,12 +11,17 @@ def hospital_dashboard_page():
             with ui.row().classes("gap-2 items-center justify-center"):
                 ui.image("/assets/logo.png").classes("w-12 h-12")
                 ui.label("LifeLink").classes("text-xl font-bold text-gray-700")
+            with ui.row().classes("gap-6 mt-3 md:mt-0"):
+                ui.link("About","/about").classes("no-underline text-gray-700 hover:text-red transition")
+                ui.link("Education","/education").classes("no-underline text-gray-700 hover:text-red transition")
+                ui.link("Contact").classes("no-underline text-gray-700 hover:text-red transition")
+                ui.link("FAQs").classes("no-underline text-gray-700 hover:text-red transition")
             with ui.row().classes("gap-4 items-center"):
                 ui.icon("notifications").classes("text-gray-700 text-2xl cursor-pointer")
                 ui.image("/assets/hero2.png").classes("w-10 h-10 rounded-full object-cover")
 
         # main for request and donor matches
-        with ui.row().classes("flex flex-col md:flex-row justify-center gap-6 w-full px-4 py-6"):
+        with ui.row().classes("flex flex-col md:flex-row justify-center gap-6 w-full px-2 py-6"):
             # Blood Request Form Card 
             with ui.card().classes("w-full md:w-1/4 p-6 bg-white shadow-md rounded-md"):
                 ui.label("Blood Request Form").classes("text-xl font-bold text-gray-700 mb-2")
@@ -93,8 +98,7 @@ def hospital_dashboard_page():
                         width="100%" height="300" style="border:0; border-radius: 12px;" allowfullscreen=""
                         loading="lazy"
                     ></iframe>
-                    """,
-                    sanitize=False,
+                    """
                 ).classes("w-full h-80 rounded-md overflow-hidden")
             with ui.card().classes("w-full md:w-3/5 p-6 bg-white shadow-md rounded-md"):
                 ui.label("Request History").classes("text-xl font-bold text-gray-700 mb-2")

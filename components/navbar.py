@@ -2,7 +2,7 @@ from nicegui import ui
 
 
 def show_navbar():
-    with ui.row().classes("flex flex-col md:flex-row items-center justify-between shadow-md w-full px-3 md:px-7 py-3"):
+    with ui.row().classes("flex flex-col md:flex-row items-center justify-between shadow-md w-full px-3 md:px-7 py-1"):
             with ui.row().classes("gap-0 space-x-0 items-center justify-center"):
                 ui.image("/assets/logo.png").classes("w-12 h-12")
                 ui.label("LifeLink GH").classes("text-xl font-bold text-gray-700")
