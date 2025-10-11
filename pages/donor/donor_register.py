@@ -3,7 +3,7 @@ from nicegui import ui,app
 app.add_static_files("/assets","assets")
 
 
-@ui.page("/donor_registration_form")
+@ui.page("/donor_registration")
 def donor_registration_page():
     ui.query(".nicegui-content").classes("m-0 p-0 gap-0")
     with ui.element("main").classes("min-h-screen w-full flex flex-col"):
@@ -57,7 +57,7 @@ def donor_registration_page():
                         ui.input().props("flat outlined dense").classes("bg-white text-xs")
 
                 # Register button
-                ui.button("Register Now").props("no-caps flat dense").classes(
+                ui.button("Register Now", on_click=lambda: ui.navigate.to("/donor/dashboard")).props("no-caps flat dense").classes(
                     "bg-red-600 text-white hover:bg-red-500 rounded-md my-4 py-2 px-4 w-full"
                 )
 
