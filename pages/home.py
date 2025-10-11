@@ -13,7 +13,7 @@ def home_page():
         # Hero
         with ui.element("hero").classes("flex items-center justify-center w-full text-white bg-[url('/assets/hero.png')] bg-cover bg-center bg-black/60 bg-blend-overlay"):
             with ui.column().classes("items-center w-full max-w-screen-lg text-center py-35 px-5"):
-                ui.label("Connecting Donors, Saving Lives.").classes("text-2xl md:text-6xl font-bold")
+                ui.label("Connecting Donors. Saving Lives.").classes("text-2xl md:text-6xl font-bold")
                 ui.html(
                     content=(
                         "Lifelink is a platform dedicated to connecting blood donors with hospitals in <br>"
