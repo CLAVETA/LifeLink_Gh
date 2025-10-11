@@ -106,6 +106,7 @@ def donor_profile_page():
                                 ui.label("SMS Alerts for Urgent Need").classes("font-medium text-gray-800")
                                 ui.switch(value=True).props("color=red")
                             ui.separator()    
+                        
                             # App Status Updates
                             with ui.row().classes("items-center justify-between w-full"):
                                 ui.label("App Status Updates").classes("font-medium text-gray-800")

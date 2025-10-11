@@ -195,3 +195,4 @@ def donor_dashboard_page():
                             ui.label("O+").classes("text-3xl font-bold text-red-600")
                             
                     ui.separator().classes("my-4")
+                    

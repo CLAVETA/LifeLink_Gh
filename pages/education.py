@@ -2,7 +2,7 @@ from nicegui import ui, app
 
 # components
 from components.navbar import show_navbar
-from components.footer import show_footer
+# from components.footer import show_footer
 
 def search_card():
     with ui.element("div").classes("flex items-center justify-center w-full px-4 -mt-10 relative z-10"):
@@ -94,18 +94,9 @@ def education_page():
 
 
         # 4. Footer (Consistent with the style used in the other pages)
-<<<<<<< HEAD
         with ui.row().classes("flex flex-col md:flex-row items-center justify-between px-7 w-full bg-gray-50 py-5 text-sm mt-auto text-gray-500"):
-=======
-       with ui.row().classes("flex flex-col md:flex-row items-center justify-between px-7 w-full bg-gray-50 py-5 text-sm mt-auto text-gray-500"):
->>>>>>> 1b1c76dc77f9e818acc0879730d17d53a9b4e58d
             ui.label("© 2025 LifeLink. All rights reserved.").classes("mb-3 md:mb-0")
             with ui.row().classes("gap-6"):
                 ui.html('<i class="fa-brands fa-square-linkedin text-xl hover:text-red-600 transition"></i>', sanitize=False)
                 ui.html('<i class="fa-brands fa-instagram text-xl hover:text-red-600 transition"></i>', sanitize=False)
                 ui.html('<i class="fa-brands fa-facebook text-xl hover:text-red-600 transition"></i>', sanitize=False)
-<<<<<<< HEAD
-        
-=======
-        
->>>>>>> 1b1c76dc77f9e818acc0879730d17d53a9b4e58d
