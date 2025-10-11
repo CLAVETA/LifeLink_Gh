@@ -21,6 +21,6 @@ def donor_header():
                     ui.menu_item('My Impact', on_click=lambda: ui.navigate.to("/donor/dashboard")).props('icon=heart') # Placeholder
                     ui.menu_item('My Profile', on_click=lambda: ui.navigate.to("/donor/profile")).props('icon=account_circle')
                     ui.menu_item('Logout', on_click=lambda: ui.navigate.to("/")).props('icon=logout')
-                    # with ui.menu_item('Settings').props('icon=settings'):
+                    ui.menu_item('Settings').props('icon=settings')
                         # ui.menu_item('Theme', on_click=dark_mode.toggle).props('icon=lightbulb')
          
