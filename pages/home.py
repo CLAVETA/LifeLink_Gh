@@ -21,7 +21,7 @@ def home_page():
                         "ensure timely access to life-saving blood for patients, especially those with<br>"
                         "sickle cell disease, by building a robust network of donors and providing critical<br>"
                         "information"
-                    )).classes("text-base md:text-lg leading-relaxed")
+                    ), sanitize = False).classes("text-base md:text-lg leading-relaxed")
                 with ui.row().classes("gap-4 mt-6"):
                     ui.button("Volunteer Signup",on_click=lambda: ui.navigate.to("/volunteer_signup")).props("no-caps flat dense").classes("bg-red-600 text-white px-4 rounded-md hover:bg-red-500 transition")
                     ui.button("Learn About Sickle Cell", on_click=lambda: ui.navigate.to("/sicklecell_education")).props("no-caps flat dense").classes("bg-[rgba(255,255,255,0.3)] text-white rounded-md px-4 hover:bg-[rgba(255,255,255,0.5)] transition")
