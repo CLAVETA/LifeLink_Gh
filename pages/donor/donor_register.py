@@ -58,7 +58,7 @@ def donor_registration_page():
                         ui.input().props("flat outlined dense").classes("bg-white text-xs")
 
                 # Register button
-                ui.button("Register Now").props("no-caps flat dense").classes(
+                ui.button("Register Now", on_click=lambda: ui.navigate.to("/donor/dashboard")).props("no-caps flat dense").classes(
                     "bg-red-600 text-white hover:bg-red-500 rounded-md my-4 py-2 px-4 w-full"
                 )
 

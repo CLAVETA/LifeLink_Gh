@@ -8,4 +8,4 @@ def show_footer():
                 ui.link("About","/about").classes("no-underline text-gray-700 transition")
                 ui.link("Contact").classes("no-underline hover:text-white text-gray-700 transition")
                 ui.link("Privacy Policy").classes("no-underline text-gray-700 transition")
-                ui.link("FAQs").classes("no-underline text-gray-700 transition")
+
