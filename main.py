@@ -13,6 +13,9 @@ from pages.hospital.hospital_register import *
 
 # donor
 from pages.donor.donor_register import *
+from pages.donor.donor_dashboard import *
+from pages.donor.donor_profile import *
+from pages.donor.donor_alerts import *
 
 # volunteer
 from pages.volunteer.volunteer_register import *
