@@ -14,14 +14,14 @@ def volunteer_signup_page():
         ):
             with ui.row().classes("gap-0 items-center justify-center"):
                 ui.image("/assets/logo.png").classes("w-12 h-12")
-                ui.label("LifeLink").classes("text-xl font-bold text-gray-700")
+                ui.link("LifeLink GH","/").classes("no-underline text-xl font-bold text-gray-700")
             with ui.row().classes("gap-6 mt-3 md:mt-0"):
                 ui.link("About","/about").classes("no-underline text-gray-700 hover:text-red-500 transition")
                 ui.link("How it works").classes("no-underline text-gray-700 hover:text-red-500 transition")
                 ui.link("Contact").classes("no-underline text-gray-700 hover:text-red-500 transition")
             with ui.row().classes("gap-3 mt-3 md:mt-0"):
-                ui.button("Register").props("no-caps flat dense").classes("bg-red-600 text-white hover:bg-red-500 rounded-md px-4")
-                ui.button("Login").props("no-caps flat dense").classes("bg-pink-200 text-red hover:bg-red-500 rounded-md px-4")
+                ui.button("Register",on_click=lambda: ui.navigate.to("/volunteer_signup")).props("no-caps flat dense").classes("bg-red-600 text-white hover:bg-red-500 rounded-md px-4")
+                ui.button("Login").props("no-caps flat dense").classes("bg-pink-200 text-red hover:bg-pink-300 rounded-md px-4")
         # Signup form 
         with ui.element("section").classes("flex-grow flex items-center justify-center w-full px-4"):
             with ui.card().classes("w-full md:w-[60%] lg:w-[50%] p-6 bg-white text-gray-700 rounded-md items-center my-3 shadow-none border-none"):

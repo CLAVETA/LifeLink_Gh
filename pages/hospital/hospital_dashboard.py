@@ -86,7 +86,7 @@ def hospital_dashboard_page():
                     ui.label("AVAILABILITY").classes("text-center")
                     ui.label("PROFILE").classes("text-center")
 
-        # Maap & Request History
+        # Map & Request History
         with ui.row().classes("flex flex-col md:flex-row justify-center gap-6 w-full px-4 py-6"):
             # Blood Request Form Card 
             with ui.card().classes("w-full md:w-1/4 p-6 bg-white shadow-md rounded-md"):
@@ -98,7 +98,7 @@ def hospital_dashboard_page():
                         width="100%" height="300" style="border:0; border-radius: 12px;" allowfullscreen=""
                         loading="lazy"
                     ></iframe>
-                    """
+                    """, sanitize=False
                 ).classes("w-full h-80 rounded-md overflow-hidden")
             with ui.card().classes("w-full md:w-3/5 p-6 bg-white shadow-md rounded-md"):
                 ui.label("Request History").classes("text-xl font-bold text-gray-700 mb-2")

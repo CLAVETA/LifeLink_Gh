@@ -4,7 +4,7 @@ def donor_header():
     # with ui.row().classes("flex flex-col md:flex-row items-center justify-between shadow-md w-full px-3 md:px-7 py-3"):
             with ui.row().classes("gap-0 space-x-0 items-center justify-center"):
                 ui.image("/assets/logo.png").classes("w-12 h-12")
-                ui.label("LifeLink GH").classes("text-xl font-bold text-gray-700")
+                ui.link("LifeLink GH","/").classes("no-underline text-xl font-bold text-gray-700")
             ui.space()
             with ui.row().classes("gap-6 mt-3 md:mt-0"):
                 ui.link("Home","/").classes("no-underline text-gray-700 hover:text-red transition")
