@@ -22,11 +22,11 @@ async def _login(data):
         json_data = response.json()
         # app.storage.user["access_token"] = json_data["access_token"]
         ui.notify("Login successful!", color="positive")
-        return ui.navigate.to("/hospital/dashboard")
+        return ui.navigate.to("/donor/dashboard")
 
 
-@ui.page("/hospital/login")
-def hospital_login_page():
+@ui.page("/donor/login")
+def donor_login_page():
     global _login_btn
     ui.query(".nicegui-content").classes("m-0 p-0 gap-0")
     with ui.element("main").classes("min-h-screen w-full flex flex-col"):
@@ -40,14 +40,14 @@ def hospital_login_page():
                 ui.link("How it works").classes("no-underline text-gray-700 hover:text-red-500 transition")
                 ui.link("Contact").classes("no-underline text-gray-700 hover:text-red-500 transition")
             with ui.row().classes("gap-3 mt-3 md:mt-0"):
-                ui.button("Hospital Login").props("no-caps flat dense").classes("bg-red-600 text-white hover:bg-red-500 rounded-md px-4")
+                ui.button("Donor Login").props("no-caps flat dense").classes("bg-red-600 text-white hover:bg-red-500 rounded-md px-4")
         # Signin form 
         with ui.element("section").classes("flex-grow flex items-center justify-center w-full px-4 md:mt-5"):
             with ui.card().classes("w-full md:w-[60%] lg:w-[50%] p-6 bg-white shadow-md items-center rounded-md"):
                 ui.label("Sign in to your account").classes("text-xl md:text-2xl font-bold text-center")
 
                 with ui.element("div").classes("flex flex-col w-full pt-5 pb-2 text-gray-700"):
-                    ui.label("Hospital Name").classes("text-sm text-left")
+                    ui.label("Donor Name").classes("text-sm text-left")
                     ui.input(placeholder="Your Name").props("flat outlined dense").classes("rounded-sm bg-white text-xs")
 
 
@@ -59,12 +59,12 @@ def hospital_login_page():
                     ui.label("Password").classes("text-sm text-left")
                     password = ui.input(placeholder="Your Password",password=True,
                         password_toggle_button=True,).props("flat outlined dense").classes("bg-white text-xs")
-                    _login_btn = (ui.button("Login as hospital",on_click=lambda:_login(data={"email": email.value,"password": password.value })).props("no-caps flat dense").classes("bg-red-600 text-white hover:bg-red-500 rounded-md my-4 py-2 px-4"))
+                    _login_btn = (ui.button("Login as donor",on_click=lambda:_login(data={"email": email.value,"password": password.value })).props("no-caps flat dense").classes("bg-red-600 text-white hover:bg-red-500 rounded-md my-4 py-2 px-4"))
                     
                     # Sign up link
                     with ui.row().classes("items-center justify-center space-x-1 gap-0 m-0 p-0"):
                         ui.label("Don't have an account?")
-                        ui.link("Sign up", "/hospital/register").classes("no-underline text-red-600")
+                        ui.link("Sign up", "/donor/register").classes("no-underline text-red-600")
 
         # Footer 
         with ui.row().classes("flex flex-col md:flex-row items-center justify-center px-7 w-full bg-gray-50 py-4 text-sm md:mt-5 text-gray-700"):

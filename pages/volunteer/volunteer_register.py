@@ -1,10 +1,30 @@
-from nicegui import ui,app
+from nicegui import ui,app,run
+from utils.api import base_url
+import requests
 
 app.add_static_files("/assets","assets")
 
 
+_register_btn: ui.button = None
+
+def _run_register(data):
+    return requests.post(f"{base_url}/volunteers/register", data=data)
+
+
+async def _register(data):
+    _register_btn.props(add="disable loading")
+    response = await run.cpu_bound(_run_register, data)
+    print(response.status_code, response.content)
+    _register_btn.props(remove="disable loading")
+    if response.status_code == 201:
+        return ui.navigate.to("/volunteer/login")
+    elif response.status_code == 409:
+        return ui.notify(message="User already exits!", type="warning")
+
+
 @ui.page("/volunteer_signup")
 def volunteer_signup_page():
+    global _register_btn
     ui.query(".nicegui-content").classes("m-0 p-0 gap-0")
 
     with ui.element("main").classes("min-h-screen w-full flex flex-col"):
@@ -21,7 +41,7 @@ def volunteer_signup_page():
                 ui.link("Contact").classes("no-underline text-gray-700 hover:text-red-500 transition")
             with ui.row().classes("gap-3 mt-3 md:mt-0"):
                 ui.button("Register",on_click=lambda: ui.navigate.to("/volunteer_signup")).props("no-caps flat dense").classes("bg-red-600 text-white hover:bg-red-500 rounded-md px-4")
-                ui.button("Login").props("no-caps flat dense").classes("bg-pink-200 text-red hover:bg-pink-300 rounded-md px-4")
+                ui.button("Login",on_click=lambda:ui.navigate.to("/volunteer/login")).props("no-caps flat dense").classes("bg-pink-200 text-red hover:bg-pink-300 rounded-md px-4")
         # Signup form 
         with ui.element("section").classes("flex-grow flex items-center justify-center w-full px-4"):
             with ui.card().classes("w-full md:w-[60%] lg:w-[50%] p-6 bg-white text-gray-700 rounded-md items-center my-3 shadow-none border-none"):
@@ -31,34 +51,57 @@ def volunteer_signup_page():
                 # Full Name
                 with ui.element("div").classes("flex flex-col w-full mb-2"):
                     ui.label("Full Name").classes("text-sm text-left")
-                    ui.input(placeholder="Enter your full name").props("flat outlined border-red dense").classes("rounded-sm bg-white text-xs")
+                    fullname = ui.input(placeholder="Enter your full name").props("flat outlined border-red dense").classes("rounded-sm bg-white text-xs")
 
                 # Location
                 with ui.element("div").classes("flex flex-col w-full mb-2"):
                     ui.label("Location").classes("text-sm text-left")
-                    ui.input(placeholder="eg., City, State").props("flat outlined dense").classes("rounded-sm bg-white text-xs border-red-600")
+                    location = ui.input(placeholder="eg., City, State").props("flat outlined dense").classes("rounded-sm bg-white text-xs border-red-600")
 
                 # Skills / Interests
                 with ui.element("div").classes("flex flex-col w-full mb-2"):
                     ui.label("Skills / Interests").classes("text-sm text-left")
                     ui.label("Choose the areas where you'd like to contribute.").classes("text-xs text-gray-600 mb-2")
                     with ui.row().classes("gap-6"):
-                        ui.checkbox("Awareness Campaigns").props("color=red").classes("text-sm")
-                        ui.checkbox("Education & Outreach").props("color=red").classes("text-sm")
-                        ui.checkbox("Event Organization").props("color=red").classes("text-sm")
+                       awareness =  ui.checkbox("Awareness Campaigns").props("color=red").classes("text-sm")
+                       education = ui.checkbox("Education & Outreach").props("color=red").classes("text-sm")
+                       events = ui.checkbox("Event Organization").props("color=red").classes("text-sm")
 
                 # Contact Number
                 with ui.element("div").classes("flex flex-col w-full mb-2"):
                     ui.label("Contact Number").classes("text-sm text-left")
-                    ui.input(placeholder="Enter your phone number").props("flat outlined dense").classes("rounded-sm bg-white text-xs border-red-600")
+                    phone_number = ui.input(placeholder="Enter your phone number").props("flat outlined dense").classes("rounded-sm bg-white text-xs border-red-600")
 
                 # Email Address
                 with ui.element("div").classes("flex flex-col w-full mb-2"):
                     ui.label("Email Address").classes("text-sm text-left")
-                    ui.input(placeholder="you@example.com").props("flat outlined dense").classes("rounded-sm bg-white text-xs border-red-600")
+                    email = ui.input(placeholder="you@example.com").props("flat outlined dense").classes("rounded-sm bg-white text-xs border-red-600")
+                
+                # Password
+                with ui.element("div").classes("flex flex-col w-full mb-2"):
+                    ui.label("Password").classes("text-sm text-left")
+                    password = ui.input(placeholder="Your Password",password=True,
+                        password_toggle_button=True,).props("flat outlined dense").classes("rounded-sm bg-white text-xs border-red-600")
 
                 # Register button
-                ui.button("Register Now").props("no-caps flat dense").classes(
+                def collect_skills():
+                    selected_skills = []
+                    if awareness.value:
+                        selected_skills.append("Awareness Campaigns")
+                    if education.value:
+                        selected_skills.append("Education & Outreach")
+                    if events.value:
+                        selected_skills.append("Event Organization")
+
+                _register_btn = (ui.button("Register Now", on_click=lambda: _register(
+                            {
+                                "full_name": fullname.value,
+                                "email": email.value,
+                                "password": password.value,
+                                "location": location.value,
+                                "contact_number": phone_number.value,
+                                "skills": collect_skills(),
+                            }))).props("no-caps flat dense").classes(
                     "bg-red-600 text-white hover:bg-red-500 rounded-md my-4 py-2 px-4 w-full"
                 )
 

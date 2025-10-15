@@ -14,6 +14,7 @@ from pages.hospital.hospital_login import *
 
 # donor
 from pages.donor.donor_register import *
+from pages.donor.donor_login import *
 from pages.donor.donor_dashboard import *
 from pages.donor.donor_profile import *
 from pages.donor.donor_alerts import *
@@ -49,6 +50,9 @@ def show_hospital_login():
 def show_donor_registration_page():
     donor_registration_page()    
 
+def show_donor_login():
+    donor_login_page()
+
 def show_volunteer_signup_page():
     volunteer_signup_page()
 
@@ -58,4 +62,4 @@ def show_education_page():
 def show_sicklecell_page():
     sicklecell_page()
 
-ui.run(favicon="assets/favicon.ico", title="LifeLink")
+ui.run(storage_secret="akualizzy!akualizzy!")
