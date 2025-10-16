@@ -27,13 +27,13 @@ def home_page():
                     ui.button("Learn About Sickle Cell", on_click=lambda: ui.navigate.to("/sicklecell_education")).props("no-caps flat dense").classes("bg-[rgba(255,255,255,0.3)] text-white rounded-md px-4 hover:bg-[rgba(255,255,255,0.5)] transition")
         # Stats Section
         with ui.row().classes("grid grid-cols-1 md:grid-cols-3 gap-6 w-full px-3 md:px-7 py-10 max-w-screen-lg mx-auto"):
-            with ui.card().classes("flex flex-col items-center p-6 shadow rounded-md"):
+            with ui.card().classes("flex flex-col items-center p-6 shadow rounded-md border border-red-100"):
                 ui.label("12,500+").classes("text-2xl md:text-4xl font-bold text-red-500")
                 ui.label("Donors Registered").classes("text-sm md:text-base text-gray-700 font-bold")
-            with ui.card().classes("flex flex-col items-center p-6 shadow rounded-md"):
+            with ui.card().classes("flex flex-col items-center p-6 shadow rounded-md border border-red-100"):
                 ui.label("250+").classes("text-2xl md:text-4xl font-bold text-red-500")
                 ui.label("Hospitals Onboarded").classes("text-sm md:text-base text-gray-700 font-bold")
-            with ui.card().classes("flex flex-col items-center p-6 shadow rounded-md"):
+            with ui.card().classes("flex flex-col items-center p-6 shadow rounded-md border border-red-100"):
                 ui.label("5,000+").classes("text-2xl md:text-4xl font-bold text-red-500")
                 ui.label("Successful Matches").classes("text-sm md:text-base text-gray-700 font-bold")
         # Footer

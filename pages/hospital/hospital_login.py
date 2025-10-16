@@ -20,7 +20,7 @@ async def _login(data):
     _login_btn.props(remove="disable loading")
     if response.status_code == 200:
         json_data = response.json()
-        # app.storage.user["access_token"] = json_data["access_token"]
+        app.storage.user["access_token"] = json_data["access_token"]
         ui.notify("Login successful!", color="positive")
         return ui.navigate.to("/hospital/dashboard")
 
@@ -31,7 +31,7 @@ def hospital_login_page():
     ui.query(".nicegui-content").classes("m-0 p-0 gap-0")
     with ui.element("main").classes("min-h-screen w-full flex flex-col"):
         # Navbar
-        with ui.row().classes("flex flex-col md:flex-row items-center justify-between shadow-md w-full px-3 md:px-7 py-1"):
+        with ui.row().classes("flex flex-col md:flex-row items-center justify-between shadow-sm w-full px-3 md:px-7 py-1 border-b border-red-100"):
             with ui.row().classes("gap-0 items-center justify-center"):
                 ui.image("/assets/logo.png").classes("w-12 h-12")
                 ui.link("LifeLink GH","/").classes("no-underline text-xl font-bold text-gray-700")
@@ -43,7 +43,7 @@ def hospital_login_page():
                 ui.button("Hospital Login").props("no-caps flat dense").classes("bg-red-600 text-white hover:bg-red-500 rounded-md px-4")
         # Signin form 
         with ui.element("section").classes("flex-grow flex items-center justify-center w-full px-4 md:mt-5"):
-            with ui.card().classes("w-full md:w-[60%] lg:w-[50%] p-6 bg-white shadow-md items-center rounded-md"):
+            with ui.card().classes("w-full md:w-[60%] lg:w-[40%] p-6 bg-white shadow-md items-center rounded-md"):
                 ui.label("Sign in to your account").classes("text-xl md:text-2xl font-bold text-center")
 
                 with ui.element("div").classes("flex flex-col w-full pt-5 pb-2 text-gray-700"):
@@ -67,5 +67,5 @@ def hospital_login_page():
                         ui.link("Sign up", "/hospital/register").classes("no-underline text-red-600")
 
         # Footer 
-        with ui.row().classes("flex flex-col md:flex-row items-center justify-center px-7 w-full bg-gray-50 py-4 text-sm md:mt-5 text-gray-700"):
+        with ui.row().classes("flex flex-col md:flex-row items-center justify-center px-7 w-full bg-gray-50 py-4 text-sm md:mt-5 text-gray-700 border-t border-red-100"):
             ui.label("© 2025 LifeLink. All rights reserved.").classes("mb-3 md:mb-0")

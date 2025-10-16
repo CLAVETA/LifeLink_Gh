@@ -27,7 +27,7 @@ def hospital_signup_page():
     ui.query(".nicegui-content").classes("m-0 p-0 gap-0")
     with ui.element("main").classes("min-h-screen w-full flex flex-col"):
         # Navbar
-        with ui.row().classes("flex flex-col md:flex-row items-center justify-between shadow-md w-full px-3 md:px-7 py-1"):
+        with ui.row().classes("flex flex-col md:flex-row items-center justify-between shadow-sm w-full px-3 md:px-7 py-1 border-b border-red-100"):
             with ui.row().classes("gap-0 items-center justify-center"):
                 ui.image("/assets/logo.png").classes("w-12 h-12")
                 ui.link("LifeLink GH","/").classes("no-underline text-xl font-bold text-gray-700")
@@ -36,10 +36,10 @@ def hospital_signup_page():
                 ui.link("How it works").classes("no-underline text-gray-700 hover:text-red-500 transition")
                 ui.link("Contact").classes("no-underline text-gray-700 hover:text-red-500 transition")
             with ui.row().classes("gap-3 mt-3 md:mt-0"):
-                ui.button("Hospital Login",on_click=lambda: ui.navigate.to("/hospital/login")).props("no-caps flat dense").classes("bg-pink-200 text-red hover:bg-red-500 rounded-md px-4")
+                ui.button("Hospital Login",on_click=lambda: ui.navigate.to("/hospital/login")).props("no-caps flat dense").classes("bg-pink-200 text-red hover:bg-red-200 rounded-md px-4")
         # Signup form 
         with ui.element("section").classes("flex-grow flex items-center justify-center w-full px-4 md:mt-5"):
-            with ui.card().classes("w-full md:w-[60%] lg:w-[50%] p-6 bg-white shadow-md items-center rounded-md"):
+            with ui.card().classes("w-full md:w-[60%] lg:w-[40%] p-6 bg-white shadow-md items-center rounded-md"):
                 ui.label("Register as Hospital").classes("text-xl md:text-2xl font-bold text-center")
                 with ui.row().classes("items-center justify-center text-sm space-x-1 gap-0 m-0 p-0"):
                     ui.label("Already have an account?")
@@ -83,5 +83,5 @@ def hospital_signup_page():
                     ).classes("text-sm text-center")
 
         # Footer 
-        with ui.row().classes("flex flex-col md:flex-row items-center justify-center px-7 w-full bg-gray-50 py-4 text-sm md:mt-5 text-gray-700"):
+        with ui.row().classes("flex flex-col md:flex-row items-center justify-center px-7 w-full bg-gray-50 py-4 text-sm md:mt-5 text-gray-700 border-t border-red-100"):
             ui.label("© 2025 LifeLink. All rights reserved.").classes("mb-3 md:mb-0")

@@ -1,12 +1,18 @@
 from nicegui import ui, app
 
+# Define your app's color theme
+PRIMARY_COLOR = "#ec1313"
+BACKGROUND_LIGHT = "#f8f6f6"
+TEXT_DARK = "#221010"
+MUTED_LIGHT="#9a4c4c"
+
 @ui.page("/about")
 def about_page():
     ui.add_head_html('<script src="https://kit.fontawesome.com/6704ceb212.js" crossorigin="anonymous"></script>')
     ui.query(".nicegui-content").classes("m-0 p-0 gap-0")
     with ui.element("main").classes("min-h-screen w-full flex flex-col"):
         # Navbar
-        with ui.row().classes("flex flex-col md:flex-row items-center justify-between shadow-md w-full px-3 md:px-7 py-1"):
+        with ui.row().classes("flex flex-col md:flex-row items-center justify-between shadow-sm w-full px-3 md:px-7 py-1 border-b border-red-100"):
             with ui.row().classes("gap-0 space-x-0 items-center justify-center"):
                 ui.image("/assets/logo.png").classes("w-12 h-12")
                 ui.link("LifeLink GH","/").classes("no-underline text-xl font-bold text-gray-700")
@@ -19,12 +25,12 @@ def about_page():
         
         # Hero Section (About LifeLink)
         with ui.element("section").classes("flex flex-col items-center justify-center w-full py-10 px-5 text-center"):
-            ui.label("About LifeLink").classes("text-2xl md:text-4xl font-bold text-gray-800 mb-4")
+            ui.label("About LifeLink").classes("text-2xl md:text-4xl font-bold text-gray-800 mb-4 bg-blue")
             ui.html(
                 content=(
                     "Connecting donors, saving lives. We are dedicated to ensuring a stable blood supply for<br>"
                     "those in need and raising awareness about sickle cell disease<br>"
-                ), sanitize=False).classes("text-base md:text-lg text-gray-500")
+                ), sanitize=False).classes("text-base md:text-lg").style("color: #9a4c4c;")
 
        # Mission & Vision 
             with ui.row().classes("px-5 py-12 md:mx-20 grid grid-cols-1 md:grid-cols-2 gap-10 items-start text-center justify-center"):
@@ -40,7 +46,7 @@ def about_page():
                             "community of informed and active donors<br>"
                         ),
                         sanitize=False,
-                    ).classes("text-base md:text-lg text-gray-500 md:text-left")
+                    ).classes("text-base md:text-lg md:text-left").style("color: #9a4c4c;")
 
                 with ui.column().classes("text-left flex flex-col md:items-start"):
                     ui.label("Our Vision").classes("text-xl md:text-2xl font-semibold text-gray-800 mb-2")
@@ -54,21 +60,21 @@ def about_page():
                             "blood transfusions.<br>"
                         ),
                         sanitize=False,
-                    ).classes("text-base md:text-lg text-gray-500  md:text-left")
+                    ).classes("text-base md:text-lg text-gray-500 md:text-left").style("color: #9a4c4c;")
 
         # Stats Section
         with ui.column().classes("w-full items-center py-16 bg-gray-50"):
             ui.label("Our Impact").classes("text-xl md:text-3xl font-bold text-gray-800 mb-8 text-center")
             with ui.row().classes("grid grid-cols-1 md:grid-cols-3 gap-6 w-full px-5 md:px-7 max-w-screen-lg mx-auto"):
-                with ui.card().classes("flex flex-col items-center p-6 shadow rounded-md"):
+                with ui.card().classes("flex flex-col items-center p-6 shadow rounded-md border border-red-100"):
                     ui.label("1,500+").classes("text-2xl md:text-4xl font-bold text-red-500")
-                    ui.label("Lives Saved").classes("text-sm md:text-base text-gray-500")
-                with ui.card().classes("flex flex-col items-center p-6 shadow rounded-md"):
+                    ui.label("Lives Saved").classes("text-sm md:text-base").style("color: #9a4c4c;")
+                with ui.card().classes("flex flex-col items-center p-6 shadow rounded-md border border-red-100"):
                     ui.label("5,000+").classes("text-2xl md:text-4xl font-bold text-red-500")
-                    ui.label("Blood Units Donated").classes("text-sm md:text-base text-gray-500")
-                with ui.card().classes("flex flex-col items-center p-6 shadow rounded-md"):
+                    ui.label("Blood Units Donated").classes("text-sm md:text-base").style("color: #9a4c4c;")
+                with ui.card().classes("flex flex-col items-center p-6 shadow rounded-md border border-red-100"):
                     ui.label("20+").classes("text-2xl md:text-4xl font-bold text-red-500")
-                    ui.label("Hospitals Supported").classes("text-sm md:text-base text-gray-500")
+                    ui.label("Hospitals Supported").classes("text-sm md:text-base").style("color: #9a4c4c;")
 
         # Our Team
         with ui.element("section").classes("w-full py-16 px-5 md:px-15"):
@@ -82,10 +88,10 @@ def about_page():
                     {"name": "Mary Worde", "role": "Backend Developer", "img": "/assets/Mary.png"},
                     {"name": "Rachael Kuranchie", "role": "Supervisor", "img": "/assets/Rachael.png"}
                 ]:
-                    with ui.column().classes("items-center text-center"):
+                    with ui.column().classes("items-center text-center p-0 m-0 gap-0"):
                         ui.image(member["img"]).classes("w-35 h-35 object-cover rounded-full shadow-md mb-3")
-                        ui.label(member["name"]).classes("font-semibold text-gray-800")
-                        ui.label(member["role"]).classes("text-sm text-gray-500")
+                        ui.label(member["name"]).classes("font-semibold text-gray-800 p-0 m-0 gap-0")
+                        ui.label(member["role"]).classes("text-sm md:mb-4").style("color: #9a4c4c;")
 
         # Our Partners
         with ui.element("section").classes("w-full py-16 bg-gray-50 px-5 md:px-20"):
@@ -116,7 +122,7 @@ def about_page():
                     ).classes("text-gray-500 text-sm md:text-base leading-relaxed")
 
                 # --- Right Side: Form ---
-                with ui.column().classes("w-full md:w-6/12 bg-white shadow-sm rounded-md items-center p-8"):
+                with ui.column().classes("w-full md:w-6/12 bg-white shadow-sm rounded-md items-center p-8 border border-red-100"):
                     ui.input(placeholder="Name").props("outlined dense").classes("w-full mb-2 text-sm")
 
                     ui.input(placeholder="Email").props("outlined dense").classes("w-full mb-2 text-sm")
@@ -131,7 +137,7 @@ def about_page():
 
         
         # Footer
-        with ui.row().classes("flex flex-col md:flex-row items-center justify-between px-7 w-full bg-gray-50 py-5 text-sm mt-auto text-red-300"):
+        with ui.row().classes("flex flex-col md:flex-row items-center justify-between px-7 w-full bg-gray-50 py-5 text-sm mt-auto  border-t border-red-100").style("color: #9a4c4c;"):
             ui.label("© 2025 LifeLink. All rights reserved.").classes("mb-3 md:mb-0")
             with ui.row().classes("gap-6"):
                 ui.html('<i class="fa-brands fa-square-linkedin"></i>', sanitize=False)

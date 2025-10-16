@@ -6,7 +6,6 @@ from pages.about import *
 from pages.education import *
 from pages.sicklecell_education import *
 
-
 # hospital
 from pages.hospital.hospital_dashboard import *
 from pages.hospital.hospital_register import *
@@ -52,6 +51,9 @@ def show_donor_registration_page():
 
 def show_donor_login():
     donor_login_page()
+
+def show_donor_alerts():
+    donation_request_page()
 
 def show_volunteer_signup_page():
     volunteer_signup_page()

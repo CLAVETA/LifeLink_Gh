@@ -30,7 +30,7 @@ def volunteer_signup_page():
     with ui.element("main").classes("min-h-screen w-full flex flex-col"):
         # Navbar
         with ui.row().classes(
-            "flex flex-col md:flex-row items-center justify-between shadow-md w-full px-3 md:px-7 py-1"
+            "flex flex-col md:flex-row items-center justify-between shadow-sm w-full px-3 md:px-7 py-1 border-b border-red-100"
         ):
             with ui.row().classes("gap-0 items-center justify-center"):
                 ui.image("/assets/logo.png").classes("w-12 h-12")
@@ -106,7 +106,7 @@ def volunteer_signup_page():
                 )
 
         # Footer 
-        with ui.element("div").classes("flex flex-col items-center justify-center px-7 w-full bg-gray-50 py-4 text-sm mt-auto text-gray-700"):
+        with ui.element("div").classes("flex flex-col items-center justify-center px-7 w-full bg-gray-50 py-4 text-sm mt-auto text-gray-700 border-t border-red-100"):
             
             # Links row (top)
             with ui.row().classes("gap-6 justify-center mb-2"):

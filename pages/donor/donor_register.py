@@ -42,7 +42,7 @@ def donor_registration_page():
                 ui.button("Hospital Login", on_click=lambda: ui.navigate.to("/hospital_signup")).props("no-caps flat dense").classes("bg-pink-200 text-red hover:bg-pink-300 rounded-md px-4")
         # Signup form 
         with ui.element("section").classes("flex-grow flex items-center justify-center w-full px-4"):
-            with ui.card().classes("w-full md:w-[60%] lg:w-[50%] p-6 bg-white shadow-md text-gray-700 rounded-md items-center my-3"):
+            with ui.card().classes("w-full md:w-[60%] lg:w-[50%] p-6 bg-white shadow-md text-gray-700 rounded-md items-center my-3 border border-red-100"):
                 ui.label("Register and Become a Lifesaver").classes("text-2xl font-bold text-center m-0 text-black")
                 ui.label("Register as a blood donor and help save lives in your community").classes("text-sm text-center text-gray-700")
                 with ui.row().classes("items-center justify-center text-sm space-x-1 gap-0 m-0 p-0"):
