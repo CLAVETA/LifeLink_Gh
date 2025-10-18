@@ -15,3 +15,4 @@ def show_navbar():
                 ui.button("Register as Donor", on_click=lambda: ui.navigate.to("/donor_registration")).props("no-caps flat dense").classes("bg-red-600 text-white hover:bg-red-500 rounded-md px-4")
                 ui.button("Hospital Login").props("no-caps flat dense").classes("bg-pink-200 text-red rounded-md px-4")
         
+        
