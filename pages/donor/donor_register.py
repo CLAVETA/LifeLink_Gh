@@ -86,6 +86,7 @@ def donor_registration_page():
                         location = ui.input().props("flat outlined dense").classes("bg-white text-xs")
 
                 # Register button
+                ui.button("Register Now", on_click=lambda: ui.navigate.to("/donor/dashboard")).props("no-caps flat dense").classes(
                 _register_btn = (ui.button("Register Now", on_click=lambda: _register(
                             {
                                 "full_name": fullname.value,
