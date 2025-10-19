@@ -3,9 +3,9 @@ from nicegui import ui
 # importing pages
 from pages.home import *
 from pages.about import *
-from pages.education.user_education import *
-from pages.education.sicklecell_education import *
-from pages.education.blooddonation_education import *
+# from pages.education.user_education import *
+# from pages.education.sicklecell_education import *
+# from pages.education.blooddonation_education import *
 
 
 # hospital
@@ -63,13 +63,13 @@ def show_volunteer_signup_page():
 def show_volunteer_login_page():
     volunteer_login_page()
 
-def show_education_page():
-    education_page()
+# def show_education_page():
+#     education_page()
 
-def show_sicklecell_page():
-    sicklecell_page()
+# def show_sicklecell_page():
+#     sicklecell_page()
 
-def show_blooddonation_page():
-    blooddonation_page()
+# def show_blooddonation_page():
+#     blooddonation_page()
 
 ui.run(storage_secret="akualizzy!akualizzy!", port=5050)

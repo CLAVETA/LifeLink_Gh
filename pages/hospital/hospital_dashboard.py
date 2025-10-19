@@ -72,7 +72,7 @@ def hospital_dashboard_page():
                     blood_type = ui.select(
                         ["Select Blood Type", "A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"],
                         value="Select Blood Type",
-                    ).props("outlined dense").classes("bg-red-50 text-xs")
+                    ).props("outlined dense color=red-100").classes("bg-red-50 text-xs")
 
                 # Urgency selector
                 with ui.element("div").classes("flex flex-col mb-1 w-full"):
@@ -80,19 +80,19 @@ def hospital_dashboard_page():
                     ui.select(
                         ["Urgent", "Not Urgent"],
                         value="Urgent",
-                    ).props("outlined dense").classes("bg-red-50 text-xs")
+                    ).props("outlined dense color=red-100").classes("bg-red-50 text-xs")
 
                 # Quantity
                 with ui.element("div").classes("flex flex-col mb-1 w-full"):
                     ui.label("Quantity (Units)").classes("text-sm text-left")
-                    quantity = ui.input(placeholder="Enter Quantity").props("flat outlined dense").classes(
+                    quantity = ui.input(placeholder="Enter Quantity").props("flat outlined dense color=red-100").classes(
                         "bg-red-50 text-xs"
                     )
 
                 # Patient Condition textarea
                 with ui.element("div").classes("flex flex-col mb-1 w-full"):
                     ui.label("Patient Condition").classes("text-sm text-left")
-                    condition = ui.textarea(placeholder="Describe Patient Condition").props("outlined").classes(
+                    condition = ui.textarea(placeholder="Describe Patient Condition").props("outlined color=red-100").classes(
                         "bg-red-50 rounded-md text-xs"
                     )
 
