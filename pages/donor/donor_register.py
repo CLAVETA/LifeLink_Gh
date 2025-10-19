@@ -36,10 +36,10 @@ def donor_registration_page():
                 ui.link("LifeLink GH","/").classes("no-underline text-xl font-bold text-gray-700")
             with ui.row().classes("gap-6 mt-3 md:mt-0"):
                 ui.link("About","/about").classes("no-underline text-gray-700 hover:text-red-500 transition")
-                ui.link("How it works").classes("no-underline text-gray-700 hover:text-red-500 transition")
-                ui.link("Contact").classes("no-underline text-gray-700 hover:text-red-500 transition")
+                ui.link("Education","/education").classes("no-underline text-gray-700 hover:text-red-500 transition")
+                ui.link("Contact","/about#contact").classes("no-underline text-gray-700 hover:text-red-500 transition")
             with ui.row().classes("gap-3 mt-3 md:mt-0"):
-                ui.button("Hospital Login", on_click=lambda: ui.navigate.to("/hospital_signup")).props("no-caps flat dense").classes("bg-pink-200 text-red hover:bg-pink-300 rounded-md px-4")
+                ui.button("Hospital Login", on_click=lambda: ui.navigate.to("/hospital/login")).props("no-caps flat dense").classes("bg-pink-200 text-red hover:bg-pink-300 rounded-md px-4")
         # Signup form 
         with ui.element("section").classes("flex-grow flex items-center justify-center w-full px-4"):
             with ui.card().classes("w-full md:w-[60%] lg:w-[50%] p-6 bg-white shadow-md text-gray-700 rounded-md items-center my-3 border border-red-100"):

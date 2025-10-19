@@ -17,10 +17,8 @@ def home_page():
                 ui.html(
                     content=(
                         "Lifelink is a platform dedicated to connecting blood donors with hospitals in <br>"
-                        "need, while also providing education about sickle cell disease. Our mission is to<br>"
-                        "ensure timely access to life-saving blood for patients, especially those with<br>"
-                        "sickle cell disease, by building a robust network of donors and providing critical<br>"
-                        "information"
+                        "need, while also providing education about sickle cell disease.<br>"
+                        "Join us in making a difference today!"
                     ), sanitize = False).classes("text-base md:text-lg leading-relaxed")
                 with ui.row().classes("gap-4 mt-6"):
                     ui.button("Volunteer Signup",on_click=lambda: ui.navigate.to("/volunteer_signup")).props("no-caps flat dense").classes("bg-red-600 text-white px-4 rounded-md hover:bg-red-500 transition")

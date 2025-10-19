@@ -19,21 +19,22 @@ def about_page():
             with ui.row().classes("gap-6 mt-3 md:mt-0"):
                 ui.link("Home","/").classes("no-underline text-gray-700 hover:text-red-600 transition")
                 ui.link("About","/about").classes("no-underline text-red-600 hover:text-red-500 transition")
-                ui.link("Contact").classes("no-underline text-gray-700 hover:text-red-600 transition")
+                ui.link("Contact","/about#contact").classes("no-underline text-gray-700 hover:text-red-600 transition")
             with ui.row().classes("gap-3 mt-3 md:mt-0"):
                 ui.button("Donate Now", on_click=lambda: ui.navigate.to("/donor_registration")).props("no-caps flat dense").classes("bg-red-600 text-white rounded-md px-4")
         
         # Hero Section (About LifeLink)
-        with ui.element("section").classes("flex flex-col items-center justify-center w-full py-10 px-5 text-center"):
-            ui.label("About LifeLink").classes("text-2xl md:text-4xl font-bold text-gray-800 mb-4 bg-blue")
-            ui.html(
-                content=(
-                    "Connecting donors, saving lives. We are dedicated to ensuring a stable blood supply for<br>"
-                    "those in need and raising awareness about sickle cell disease<br>"
-                ), sanitize=False).classes("text-base md:text-lg").style("color: #9a4c4c;")
+        with ui.element("section").classes("flex flex-col items-center justify-center w-full text-center"):
+            with ui.element("div").classes("w-full py-5 bg-[url('/assets/hero.png')] bg-cover bg-center bg-black/70 bg-blend-overlay"):
+                ui.label("About LifeLink").classes("text-2xl md:text-4xl font-bold text-white mb-4")
+                ui.html(
+                    content=(
+                        "Connecting donors, saving lives. We are dedicated to ensuring a stable blood supply for<br>"
+                        "those in need and raising awareness about sickle cell disease<br>"
+                    ), sanitize=False).classes("text-base md:text-lg").style("color: #9a4c4c;")
 
        # Mission & Vision 
-            with ui.row().classes("px-5 py-12 md:mx-20 grid grid-cols-1 md:grid-cols-2 gap-10 items-start text-center justify-center"):
+            with ui.row().classes("px-5 py-12 md:mx-20 grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-35 items-start text-center justify-center"):
                 with ui.column().classes("text-left flex flex-col md:items-start"):
                     ui.label("Our Mission").classes("text-xl md:text-2xl font-semibold text-gray-800 mb-2")
                     ui.html(
@@ -86,10 +87,13 @@ def about_page():
                     {"name": "Victoria Ewusiwaa Wilson Sey", "role": "Backend Developer", "img": "/assets/Victoria.png"},
                     {"name": "Claudia Agyeere", "role": "Backend Developer", "img": "/assets/Claudia.png"},
                     {"name": "Mary Worde", "role": "Backend Developer", "img": "/assets/Mary.png"},
-                    {"name": "Rachael Kuranchie", "role": "Supervisor", "img": "/assets/Rachael.png"}
+                    {"name": "Rachael Kuranchie", "role": "Supervisor", "img": "/assets/Rachael.jpg"}
                 ]:
                     with ui.column().classes("items-center text-center p-0 m-0 gap-0"):
-                        ui.image(member["img"]).classes("w-35 h-35 object-cover rounded-full shadow-md mb-3")
+                        with ui.element("div").classes(
+                            "w-36 h-36 rounded-full overflow-hidden flex items-center justify-center bg-gray-100 shadow-md mb-3"
+                        ):
+                            ui.image(member["img"]).classes("w-full h-full object-contain object-center")
                         ui.label(member["name"]).classes("font-semibold text-gray-800 p-0 m-0 gap-0")
                         ui.label(member["role"]).classes("text-sm md:mb-4").style("color: #9a4c4c;")
 
@@ -106,7 +110,7 @@ def about_page():
                     ui.image(partner).classes("w-32 h-37 object-contain mx-auto")
 
        # Contact Section
-        with ui.element("section").classes("w-full py-20 px-10 md:px-20 bg-white"):
+        with ui.element("section").props("id=contact").classes("w-full py-20 px-10 md:px-20 bg-white"):
             with ui.row().classes("w-full flex flex-col md:flex-row justify-center items-start gap-10 md:gap-20"):
                 
                 # --- Left Side: Text Content ---
