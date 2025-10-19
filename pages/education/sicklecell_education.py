@@ -3,6 +3,8 @@ from nicegui import ui, app
 # components
 from components.navbar import show_navbar
 from components.footer import show_footer
+
+app.add_static_files("/assets", "assets")
                 
 
 @ui.page("/sicklecell_education")

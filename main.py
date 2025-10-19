@@ -3,8 +3,10 @@ from nicegui import ui
 # importing pages
 from pages.home import *
 from pages.about import *
-from pages.education import *
-from pages.sicklecell_education import *
+from pages.education.user_education import *
+from pages.education.sicklecell_education import *
+from pages.education.blooddonation_education import *
+
 
 # hospital
 from pages.hospital.hospital_dashboard import *
@@ -67,4 +69,7 @@ def show_education_page():
 def show_sicklecell_page():
     sicklecell_page()
 
-ui.run(storage_secret="akualizzy!akualizzy!")
+def show_blooddonation_page():
+    blooddonation_page()
+
+ui.run(storage_secret="akualizzy!akualizzy!", port=5050)
