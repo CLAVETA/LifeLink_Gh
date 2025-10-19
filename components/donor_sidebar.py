@@ -18,9 +18,9 @@ def donor_sidebar():
                             
                             # Quick Actions (Matches bottom right of screen.png)
                             with ui.column().classes("w-full space-y-3"):
-                                ui.button("Edit Profile", icon="edit").props("outline no-caps").classes("w-full text-gray-700 border-gray-300 hover:bg-gray-100").on("click", lambda: ui.navigate.to("/donor_portal/profile"))
+                                ui.button("Edit Profile", icon="edit").props("outline no-caps").classes("w-full text-gray-700 border-gray-300 hover:bg-gray-100").on("click", lambda: ui.navigate.to("/donor/profile"))
                                 ui.button("Update Availability", icon="schedule").props("no-caps").classes("w-full bg-red-100 text-red-600 hover:bg-red-200")
-                                ui.button("View Medical History", icon="medical_services").props("flat no-caps").classes("w-full text-red-600 hover:bg-red-100")
+                                ui.button("View Medical History", icon="medical_services").props("flat no-caps").classes("w-full text-red-600 hover:bg-red-100").on("click", lambda: ui.navigate.to("/donor/profile"))
             
 
         # Dashboard Link

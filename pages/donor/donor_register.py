@@ -86,18 +86,22 @@ def donor_registration_page():
                         location = ui.input().props("flat outlined dense").classes("bg-white text-xs")
 
                 # Register button
-                _register_btn = (ui.button("Register Now", on_click=lambda: _register(
-                            {
-                                "full_name": fullname.value,
-                                "email": email.value,
-                                "password": password.value,
-                                "phone_number": phone_number.value,
-                                "blood_type": blood_type.value,
-                                "date_of_birth": dob.value,
-                                "location": location.value,
-                            }))).props("no-caps flat dense").classes(
+                # ui.button("Register Now", on_click=lambda: ui.navigate.to("/donor/dashboard")).props("no-caps flat dense").classes(
+                _register_btn = ui.button(
+                    "Register Now", 
+                    on_click=lambda: _register({
+                        "full_name": fullname.value,
+                        "email": email.value,
+                        "password": password.value,
+                        "phone_number": phone_number.value,
+                        "blood_type": blood_type.value,
+                        "date_of_birth": dob.value,
+                        "location": location.value,
+                    })
+                ).props("no-caps flat dense").classes(
                     "bg-red-600 text-white hover:bg-red-500 rounded-md my-4 py-2 px-4 w-full"
-                )
+                )                    
+                
 
                 # Terms & Privacy notice
                 ui.html(
