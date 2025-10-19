@@ -22,7 +22,7 @@ from pages.donor.donor_alerts import *
 
 # volunteer
 from pages.volunteer.volunteer_register import *
-
+from pages.volunteer.volunteer_login import *
 
 
 #exposing static files
@@ -59,6 +59,9 @@ def show_donor_alerts():
 
 def show_volunteer_signup_page():
     volunteer_signup_page()
+
+def show_volunteer_login_page():
+    volunteer_login_page()
 
 def show_education_page():
     education_page()

@@ -38,7 +38,7 @@ def volunteer_signup_page():
             with ui.row().classes("gap-6 mt-3 md:mt-0"):
                 ui.link("About","/about").classes("no-underline text-gray-700 hover:text-red-500 transition")
                 ui.link("How it works").classes("no-underline text-gray-700 hover:text-red-500 transition")
-                ui.link("Contact").classes("no-underline text-gray-700 hover:text-red-500 transition")
+                ui.link("Contact","/about#contact").classes("no-underline text-gray-700 hover:text-red-500 transition")
             with ui.row().classes("gap-3 mt-3 md:mt-0"):
                 ui.button("Register",on_click=lambda: ui.navigate.to("/volunteer_signup")).props("no-caps flat dense").classes("bg-red-600 text-white hover:bg-red-500 rounded-md px-4")
                 ui.button("Login",on_click=lambda:ui.navigate.to("/volunteer/login")).props("no-caps flat dense").classes("bg-pink-200 text-red hover:bg-pink-300 rounded-md px-4")
@@ -63,9 +63,11 @@ def volunteer_signup_page():
                     ui.label("Skills / Interests").classes("text-sm text-left")
                     ui.label("Choose the areas where you'd like to contribute.").classes("text-xs text-gray-600 mb-2")
                     with ui.row().classes("gap-6"):
-                       awareness =  ui.checkbox("Awareness Campaigns").props("color=red").classes("text-sm")
-                       education = ui.checkbox("Education & Outreach").props("color=red").classes("text-sm")
-                       events = ui.checkbox("Event Organization").props("color=red").classes("text-sm")
+                        skills = ui.select(
+                            options=["Awareness Campaigns", "Education & Outreach", "Event Organization"],
+                            label="Areas of Involvement",
+                        ).props("color=red").classes("text-sm w-72")
+
 
                 # Contact Number
                 with ui.element("div").classes("flex flex-col w-full mb-2"):
@@ -83,16 +85,6 @@ def volunteer_signup_page():
                     password = ui.input(placeholder="Your Password",password=True,
                         password_toggle_button=True,).props("flat outlined dense").classes("rounded-sm bg-white text-xs border-red-600")
 
-                # Register button
-                def collect_skills():
-                    selected_skills = []
-                    if awareness.value:
-                        selected_skills.append("Awareness Campaigns")
-                    if education.value:
-                        selected_skills.append("Education & Outreach")
-                    if events.value:
-                        selected_skills.append("Event Organization")
-
                 _register_btn = (ui.button("Register Now", on_click=lambda: _register(
                             {
                                 "full_name": fullname.value,
@@ -100,7 +92,7 @@ def volunteer_signup_page():
                                 "password": password.value,
                                 "location": location.value,
                                 "contact_number": phone_number.value,
-                                "skills": collect_skills(),
+                                "skills": skills.value,
                             }))).props("no-caps flat dense").classes(
                     "bg-red-600 text-white hover:bg-red-500 rounded-md my-4 py-2 px-4 w-full"
                 )

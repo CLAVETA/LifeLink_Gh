@@ -11,7 +11,7 @@ def donor_header():
                 # ui.link("Home","/").classes("no-underline text-gray-700 hover:text-red transition")
                 ui.link("About","/about").classes("no-underline text-gray-700 hover:text-red transition")
                 ui.link("Education","/education").classes("no-underline text-gray-700 hover:text-red transition")
-                ui.link("Contact", "/contact").classes("no-underline text-gray-700 hover:text-red transition")
+                ui.link("Contact","/about#contact").classes("no-underline text-gray-700 hover:text-red transition")
                 ui.link("FAQs", "/").classes("no-underline text-gray-700 hover:text-red transition")
             ui.space()
             ui.button("Donate Now", on_click=lambda: ui.navigate.to("/donor/dashboard")).props("no-caps flat dense").classes("bg-red-600 text-white hover:bg-red-500 rounded-md px-4")

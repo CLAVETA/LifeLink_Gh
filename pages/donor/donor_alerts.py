@@ -17,7 +17,7 @@ def donation_request_page():
     #     with ui.row().classes("hidden md:flex items-center gap-6"):
     #         ui.link("Home", "#").classes("text-gray-700 hover:text-red-600 transition-colors")
     #         ui.link("About", "#").classes("text-gray-700 hover:text-red-600 transition-colors")
-    #         ui.link("Contact", "#").classes("text-gray-700 hover:text-red-600 transition-colors")
+    #         ui.link("Contact","/about#contact").classes("text-gray-700 hover:text-red-600 transition-colors")
 
     #     with ui.row().classes("items-center gap-3"):
     #         ui.button("Donate Now", color=PRIMARY_COLOR).classes(
