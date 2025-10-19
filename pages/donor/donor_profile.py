@@ -1,8 +1,16 @@
 from nicegui import ui, app
+from utils.api import base_url
+import requests
 
 # components
 from components.donor_sidebar import donor_sidebar
 from components.donor_header import donor_header
+
+# # Profile Section
+# with ui.card().classes("p-6 shadow-lg rounded-xl bg-white mt-4"):
+#     ui.label("Profile Info").classes("text-xl font-semibold text-gray-800 mb-4")
+#     ui.label(f"Blood Group: {donor_profile.get('blood_group', '-')}")
+#     ui.label(f"Email: {donor_profile.get('email', '-')}")
 
 @ui.page("/donor/profile")
 def donor_profile_page():
