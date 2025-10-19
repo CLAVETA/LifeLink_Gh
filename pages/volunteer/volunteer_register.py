@@ -85,16 +85,6 @@ def volunteer_signup_page():
                     password = ui.input(placeholder="Your Password",password=True,
                         password_toggle_button=True,).props("flat outlined dense").classes("rounded-sm bg-white text-xs border-red-600")
 
-                # # Register button
-                # def collect_skills():
-                #     selected_skills = []
-                #     if awareness.value:
-                #         selected_skills.append("Awareness Campaigns")
-                #     if education.value:
-                #         selected_skills.append("Education & Outreach")
-                #     if events.value:
-                #         selected_skills.append("Event Organization")
-
                 _register_btn = (ui.button("Register Now", on_click=lambda: _register(
                             {
                                 "full_name": fullname.value,
