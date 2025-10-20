@@ -8,7 +8,7 @@ def show_navbar():
                 ui.label("LifeLink GH").classes("text-xl font-bold text-gray-700")
             with ui.row().classes("gap-6 mt-3 md:mt-0"):
                 ui.link("About","/about").classes("no-underline text-gray-700 hover:text-red-500 transition")
-                ui.link("Education","/education").classes("no-underline text-gray-700 hover:text-red-500 transition")
+                ui.link("Education","/user_education").classes("no-underline text-gray-700 hover:text-red-500 transition")
                 ui.link("Contact","/about#contact").classes("no-underline text-gray-700 hover:text-red-500 transition")
             with ui.row().classes("gap-3 mt-3 md:mt-0"):
                 ui.button("Register as Donor", on_click=lambda: ui.navigate.to("/donor_registration")).props("no-caps flat dense").classes("bg-red-600 text-white hover:bg-red-500 rounded-md px-4")

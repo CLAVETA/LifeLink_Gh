@@ -79,8 +79,8 @@ def donation_history_section(donation_history):
 
     def update_history_view():
         history_container.clear()
-        if view_mode.text == 'table':
-            render_table_view()
+        if view_mode.text == 'list':
+            render_list_view()
         else:
             render_grid_view()
 
