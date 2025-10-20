@@ -51,12 +51,12 @@ def volunteer_signup_page():
                 # Full Name
                 with ui.element("div").classes("flex flex-col w-full mb-2"):
                     ui.label("Full Name").classes("text-sm text-left")
-                    fullname = ui.input(placeholder="Enter your full name").props("flat outlined border-red dense").classes("rounded-sm bg-white text-xs")
+                    fullname = ui.input(placeholder="Enter your full name").props("flat outlined border-red dense color=red-100").classes("rounded-sm bg-white text-xs")
 
                 # Location
                 with ui.element("div").classes("flex flex-col w-full mb-2"):
                     ui.label("Location").classes("text-sm text-left")
-                    location = ui.input(placeholder="eg., City, State").props("flat outlined dense").classes("rounded-sm bg-white text-xs border-red-600")
+                    location = ui.input(placeholder="eg., City, State").props("flat outlined dense color=red-100").classes("rounded-sm bg-white text-xs border-red-600")
 
                 # Skills / Interests
                 with ui.element("div").classes("flex flex-col w-full mb-2"):
@@ -66,24 +66,24 @@ def volunteer_signup_page():
                         skills = ui.select(
                             options=["Awareness Campaigns", "Education & Outreach", "Event Organization"],
                             label="Areas of Involvement",
-                        ).props("color=red").classes("text-sm w-72")
+                        ).props("color=red-100").classes("text-sm w-72")
 
 
                 # Contact Number
                 with ui.element("div").classes("flex flex-col w-full mb-2"):
                     ui.label("Contact Number").classes("text-sm text-left")
-                    phone_number = ui.input(placeholder="Enter your phone number").props("flat outlined dense").classes("rounded-sm bg-white text-xs border-red-600")
+                    phone_number = ui.input(placeholder="Enter your phone number").props("flat outlined dense color=red-100").classes("rounded-sm bg-white text-xs border-red-600")
 
                 # Email Address
                 with ui.element("div").classes("flex flex-col w-full mb-2"):
                     ui.label("Email Address").classes("text-sm text-left")
-                    email = ui.input(placeholder="you@example.com").props("flat outlined dense").classes("rounded-sm bg-white text-xs border-red-600")
+                    email = ui.input(placeholder="you@example.com").props("flat outlined dense color=red-100").classes("rounded-sm bg-white text-xs border-red-600")
                 
                 # Password
                 with ui.element("div").classes("flex flex-col w-full mb-2"):
                     ui.label("Password").classes("text-sm text-left")
                     password = ui.input(placeholder="Your Password",password=True,
-                        password_toggle_button=True,).props("flat outlined dense").classes("rounded-sm bg-white text-xs border-red-600")
+                        password_toggle_button=True,).props("flat outlined dense color=red-100").classes("rounded-sm bg-white text-xs border-red-600")
 
                 _register_btn = (ui.button("Register Now", on_click=lambda: _register(
                             {

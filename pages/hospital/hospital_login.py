@@ -48,17 +48,17 @@ def hospital_login_page():
 
                 with ui.element("div").classes("flex flex-col w-full pt-5 pb-2 text-gray-700"):
                     ui.label("Hospital Name").classes("text-sm text-left")
-                    ui.input(placeholder="Your Name").props("flat outlined dense").classes("rounded-sm bg-white text-xs")
+                    ui.input(placeholder="Your Name").props("flat outlined dense color=red-100").classes("rounded-sm bg-white text-xs")
 
 
                 with ui.element("div").classes("flex flex-col w-full text-gray-700"):
                     ui.label("Email Address").classes("text-sm text-left ")
-                    email = ui.input(placeholder="Your Email").props("flat outlined dense").classes("bg-white text-xs")
+                    email = ui.input(placeholder="Your Email").props("flat outlined dense color=red-100").classes("bg-white text-xs")
                 
                 with ui.element("div").classes("flex flex-col w-full py-2 text-gray-700"):
                     ui.label("Password").classes("text-sm text-left")
                     password = ui.input(placeholder="Your Password",password=True,
-                        password_toggle_button=True,).props("flat outlined dense").classes("bg-white text-xs")
+                        password_toggle_button=True,).props("flat outlined dense color=red-100").classes("bg-white text-xs")
                     _login_btn = (ui.button("Login as hospital",on_click=lambda:_login(data={"email": email.value,"password": password.value })).props("no-caps flat dense").classes("bg-red-600 text-white hover:bg-red-500 rounded-md my-4 py-2 px-4"))
                     
                     # Sign up link

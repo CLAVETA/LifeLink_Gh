@@ -8,6 +8,7 @@ def donor_header():
                 ui.link("LifeLink GH","/").classes("no-underline text-xl font-bold text-gray-700")
             ui.space()
             with ui.row().classes("gap-6 mt-3 md:mt-0"):
+                # ui.link("Home","/").classes("no-underline text-gray-700 hover:text-red transition")
                 ui.link("About","/about").classes("no-underline text-gray-700 hover:text-red transition")
                 ui.link("Education","/user_education").classes("no-underline text-gray-700 hover:text-red transition")
                 ui.link("Contact","/about#contact").classes("no-underline text-gray-700 hover:text-red transition")
