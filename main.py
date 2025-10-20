@@ -3,9 +3,9 @@ from nicegui import ui
 # importing pages
 from pages.home import *
 from pages.about import *
-# from pages.education.user_education import *
-# from pages.education.sicklecell_education import *
-# from pages.education.blooddonation_education import *
+from pages.education.user_education import *
+from pages.education.sicklecell_education import *
+from pages.education.blooddonation_education import *
 
 
 # hospital

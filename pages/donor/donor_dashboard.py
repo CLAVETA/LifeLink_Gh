@@ -119,7 +119,7 @@ async def donor_dashboard_page():
         # Dashboard Header
         with ui.row().classes("w-full items-center justify-between mb-6"):
             ui.label("Donor Dashboard").classes("text-3xl font-bold text-gray-800")
-            ui.label(f"Welcome, {donor_profile.get("name", "Donor")}!").classes("text-lg text-gray-600 sm:block")
+            # ui.label(f"Welcome, {donor_profile.get("name", "Donor")}!").classes("text-lg text-gray-600 sm:block")
 
         # Donation History
         donation_history_section(donation_history)

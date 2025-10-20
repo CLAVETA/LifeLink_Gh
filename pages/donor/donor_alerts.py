@@ -1,4 +1,6 @@
 from nicegui import ui, app
+# components
+from components.donor_header import donor_header
 
 # Define your app's color theme
 PRIMARY_COLOR = "#ec1313"
@@ -24,7 +26,7 @@ def donation_request_page():
     #             "text-white font-semibold rounded-lg hover:bg-red-700 transition-all"
     #         )
     #         with ui.button(icon="notifications").classes(
-    #             "relative bg-white text-gray-700 rounded-full hover:bg-gray-100 transition"
+    #             "relative bg-white text-black rounded-full hover:bg-gray-100 transition"
     #         ):
     #             with ui.element("span").classes("absolute top-0 right-0 flex h-3 w-3").props(
     #     "style='transform: translate(25%, -25%)'"
@@ -33,7 +35,8 @@ def donation_request_page():
     #                     <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75"></span>
     #                     <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
     #                 """, sanitize=False)
-
+    with ui.header(elevated=True).classes('bg-white dark:bg-gray-800 text-black dark:text-white'):
+        donor_header()
     # ---------- MAIN CONTENT ----------
     with ui.row().classes("justify-center items-center py-12 px-4"):
         with ui.card().classes("w-full md:mx-[20%] shadow-2xl rounded-xl overflow-hidden"):

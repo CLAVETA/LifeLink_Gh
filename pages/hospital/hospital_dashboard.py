@@ -112,20 +112,21 @@ def hospital_dashboard_page():
 
             # Donor Matches Card
             with ui.column().classes("w-full md:w-[65%]"):
-                # Welcome label and hospital name (hospital name will be filled after fetching hospital info)
+                # Welcome label and hospital name
                 with ui.row().classes("items-center justify-center gap-3"):
                     ui.label("Welcome to your Dashboard!").classes(
                         "text-2xl font-semibold text-gray-800 mb-2 text-center"
                     )
                     hospital_name_label = ui.label("").classes("text-lg font-semibold text-gray-600 mb-2 text-center")
 
-                with ui.card().classes("w-full p-6 bg-white shadow-md rounded-md border border-red-100 border border-red-100"):
+                with ui.card().classes("w-full p-6 bg-white shadow-md rounded-md border border-red-100"):
                     ui.label("Donor Matches").classes("text-xl font-bold text-gray-700 mb-2")
 
-                    with ui.row().classes("grid grid-cols-1 md:grid-cols-5 gap-4 w-full"):
-                        with ui.element("div").classes("flex flex-col col-span-3"):
+                    # Search filters
+                    with ui.row().classes("grid grid-cols-1 md:grid-cols-5 gap-4 w-full items-end"):
+                        with ui.element("div").classes("flex flex-col col-span-2"):
                             ui.label("Search").classes("text-sm text-left")
-                            dm_search = ui.input(placeholder="🔍 Search donors by name, location").props(
+                            dm_search = ui.input(placeholder="🔍 Enter location or hospital name").props(
                                 "flat outlined dense"
                             ).classes("bg-red-50 text-xs rounded-md")
 
@@ -137,11 +138,18 @@ def hospital_dashboard_page():
                             ).props("outlined dense").classes("bg-red-50 text-xs rounded-md")
 
                         with ui.element("div").classes("flex flex-col col-span-1"):
-                            ui.label("Distance").classes("text-sm text-left")
-                            dm_distance = ui.input(placeholder="Enter distance (km)").props("flat outlined dense").classes(
+                            ui.label("Distance (km)").classes("text-sm text-left")
+                            dm_distance = ui.input(placeholder="10").props("flat outlined dense").classes(
                                 "bg-red-50 text-xs rounded-md"
                             )
 
+                        # Search button (aligned at the bottom)
+                        with ui.element("div").classes("flex flex-col col-span-1 justify-end"):
+                            search_btn = ui.button("Search", on_click=lambda e: load_donor_matches()).props(
+                                "color=red unelevated"
+                            ).classes("text-xs font-semibold w-full")
+
+                    # Header row
                     with ui.row().classes(
                         "grid grid-cols-5 gap-4 w-full bg-red-50 text-gray-700 font-semibold mt-3 p-2"
                     ):
@@ -151,144 +159,84 @@ def hospital_dashboard_page():
                         ui.label("AVAILABILITY").classes("text-left")
                         ui.label("CONTACT").classes("text-left")
 
-                    # Container for donor rows
+                    # Donor table container
                     donor_table = ui.column().classes("w-full")
 
                     async def load_donor_matches():
-                        token = app.storage.user.get('access_token')
-                        # Build query params required by API: blood_type, location_name, radius
+                        token = app.storage.user.get("access_token")
+
                         params = {}
-                        q = dm_search.value if hasattr(dm_search, 'value') else None
-                        if q:
-                            params['q'] = q
+                        blood_type = dm_blood.value if dm_blood.value != "All" else None
+                        if blood_type:
+                            params["blood_type"] = blood_type
 
-                        # blood_type is required; default to 'All' to indicate no filter if user didn't pick one
-                        bt = dm_blood.value if hasattr(dm_blood, 'value') else None
-                        if not bt:
-                            bt = 'All'
-                        params['blood_type'] = bt
-
-                        # radius (in km) is required by backend; validate and default to 10 km
-                        dist = dm_distance.value if hasattr(dm_distance, 'value') else None
-                        if dist:
-                            try:
-                                radius = float(dist)
-                            except Exception:
-                                ui.notify('Distance must be a number (km).', type='warning')
-                                return
-                        else:
-                            radius = 10.0
-                        params['radius'] = radius
-
-                        # include hospital_id if available (some endpoints expect it)
-                        hospital_id = app.storage.user.get('hospital_id')
-                        if not hospital_id:
-                            # try decode from token (best-effort)
-                            token_payload = app.storage.user.get('access_token')
-                            if token_payload:
-                                try:
-                                    import base64, json
-                                    parts = token_payload.split('.')
-                                    if len(parts) >= 2:
-                                        payload_b64 = parts[1]
-                                        padding = '=' * (-len(payload_b64) % 4)
-                                        payload_b64 += padding
-                                        decoded = base64.urlsafe_b64decode(payload_b64.encode()).decode()
-                                        payload_json = json.loads(decoded)
-                                        hospital_id = payload_json.get('hospital_id') or payload_json.get('hospitalId') or payload_json.get('sub')
-                                except Exception:
-                                    hospital_id = None
-                        if hospital_id:
-                            params['hospital_id'] = hospital_id
-
-                        # location_name is required; prefer stored hospital location or hospital name
-                        location_name = app.storage.user.get('hospital_location_name') or app.storage.user.get('hospital_name') or hospital_name_label.text
-                        if not location_name:
-                            location_name = 'Unknown'
-                        params['location_name'] = location_name
-
-                        headers = {'Authorization': f'Bearer {token}'} if token else {}
+                        location_name = dm_search.value or app.storage.user.get("location_name") or "Tarkwa"
+                        params["location_name"] = location_name
 
                         try:
-                            resp = await run.io_bound(lambda: requests.get(f"{base_url}/donors/search", params=params, headers=headers))
-                        except Exception as ex:
-                            ui.notify(f'Failed to search donors: {ex}', type='negative')
-                            return
-
-                        # handle unauthorized (token expiry) specifically
-                        if resp.status_code == 401:
-                            body = None
-                            try:
-                                body = resp.json()
-                            except Exception:
-                                body = resp.text
-
-                            # detect expired signature message from backend
-                            if body and ('expired' in str(body).lower() or 'signature has expired' in str(body).lower()):
-                                ui.notify('Session expired. Please log in again.', type='warning')
-                                try:
-                                    # clear stored auth info
-                                    app.storage.user.pop('access_token', None)
-                                    app.storage.user.pop('hospital_id', None)
-                                except Exception:
-                                    pass
-                                return ui.navigate.to('/hospital/login')
-
-                            ui.notify(f'Unauthorized: {resp.status_code} - {body}', type='warning')
-                            print('Donor search unauthorized', resp.status_code, body)
-                            return
-
-                        # better error reporting for other non-200 responses (helps diagnose 422)
-                        if resp.status_code != 200:
-                            body = None
-                            try:
-                                body = resp.json()
-                            except Exception:
-                                body = resp.text
-                            ui.notify(f'Failed to search donors: {resp.status_code} - {body}', type='warning')
-                            print('Donor search error', resp.status_code, body)
-                            return
-
-                        try:
-                            j = resp.json()
+                            radius = float(dm_distance.value or 10)
                         except Exception:
-                            j = None
+                            radius = 10
+                        params["radius"] = radius
 
-                        if isinstance(j, dict):
-                            items = j.get('data') or j.get('donors') or []
-                        elif isinstance(j, list):
-                            items = j
-                        else:
-                            items = []
+                        headers = {"Authorization": f"Bearer {token}"} if token else {}
+
+                        try:
+                            resp = await run.io_bound(
+                                lambda: requests.get(f"{base_url}/donors/search", params=params, headers=headers)
+                            )
+                        except Exception as ex:
+                            ui.notify(f"Failed to search donors: {ex}", type="negative")
+                            return
+
+                        if resp.status_code != 200:
+                            try:
+                                err = resp.json()
+                            except Exception:
+                                err = resp.text
+                            ui.notify(f"Failed to search donors: {resp.status_code} - {err}", type="warning")
+                            print("Donor search error", resp.status_code, err)
+                            return
+
+                        try:
+                            donors = resp.json()
+                        except Exception:
+                            donors = []
 
                         donor_table.clear()
-                        for d in items:
-                            full = d.get('full_name') or d.get('name') or f"{d.get('first_name','')} {d.get('last_name','')}".strip()
-                            phone = d.get('phone_number') or d.get('phone') or d.get('contact') or 'N/A'
-                            blood = d.get('blood_type') or d.get('bloodGroup') or 'N/A'
-                            # availability might be boolean or string
-                            if 'availability' in d:
-                                availability = d.get('availability')
-                            elif d.get('is_available') is not None:
-                                availability = 'Available' if d.get('is_available') else 'Unavailable'
-                            else:
-                                availability = d.get('status') or 'Unknown'
 
-                            distance_val = d.get('distance') or d.get('dist')
-                            distance_str = f"{distance_val} km" if distance_val is not None else 'N/A'
+                        donor_table.clear()
+                        for d in donors:
+                            # ✅ Skip invalid entries that aren't dicts
+                            if not isinstance(d, dict):
+                                continue
+
+                            full = d.get("full_name") or d.get("name") or f"{d.get('first_name','')} {d.get('last_name','')}".strip()
+                            phone = d.get("phone_number") or d.get("phone") or "N/A"
+                            blood = d.get("blood_type") or "N/A"
+                            distance_val = d.get("distance_km") or d.get("dist")
+                            distance_str = f"{distance_val} km" if distance_val is not None else "N/A"
+                            availability = (
+                                "Available"
+                                if d.get("is_available")
+                                else "Unavailable"
+                                if d.get("is_available") is not None
+                                else d.get("status", "Unknown")
+                            )
 
                             with donor_table:
-                                with ui.row().classes('grid grid-cols-5 gap-2 py-2 items-center border-b border-gray-100'):
-                                    ui.label(full or 'N/A').classes('text-left text-sm')
-                                    ui.label(blood).classes('text-left text-sm')
-                                    ui.label(distance_str).classes('text-left text-sm')
-                                    ui.label(str(availability)).classes('text-left text-sm')
-                                    ui.label(phone).classes('text-left text-sm')
+                                with ui.row().classes(
+                                    "grid grid-cols-5 gap-2 py-2 items-center border-b border-gray-100"
+                                ):
+                                    ui.label(full).classes("text-left text-sm")
+                                    ui.label(blood).classes("text-left text-sm")
+                                    ui.label(distance_str).classes("text-left text-sm")
+                                    ui.label(availability).classes("text-left text-sm")
+                                    ui.label(phone).classes("text-left text-sm")
 
-                    # auto-search handlers removed; search is triggered via the Search button
-
-                    # initial load
+                    # Auto load donors on page load
                     ui.timer(0.5, load_donor_matches, once=True)
+
 
         # Map 
         with ui.row().classes("flex flex-col md:flex-row justify-center gap-6 w-full px-4 py-6"):

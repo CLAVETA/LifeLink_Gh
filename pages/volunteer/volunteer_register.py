@@ -46,7 +46,11 @@ def volunteer_signup_page():
         with ui.element("section").classes("flex-grow flex items-center justify-center w-full px-4"):
             with ui.card().classes("w-full md:w-[60%] lg:w-[50%] p-6 bg-white text-gray-700 rounded-md items-center my-3 shadow-none border-none"):
                 ui.label("Become a Volunteer").classes("text-2xl font-bold text-center m-0 p-0 text-black")
-                ui.label("Join our community and make a difference. Your help is vital.").classes("text-sm text-center text-gray-700 mb-4")
+                ui.label("Join our community and make a difference. Your help is vital.").classes("text-sm text-center text-gray-700")
+                with ui.row().classes("items-center justify-center text-sm space-x-1 gap-0 mb-2 p-0"):
+                    ui.label("Already have an account?")
+                    ui.link("Log in", "/volunteer/login").classes("no-underline text-red-600")
+
 
                 # Full Name
                 with ui.element("div").classes("flex flex-col w-full mb-2"):
