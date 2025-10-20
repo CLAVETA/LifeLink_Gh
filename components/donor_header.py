@@ -18,8 +18,8 @@ def donor_header():
             with ui.button(icon='person', color='primary').props('flat round'):
                 with ui.menu():
                     ui.menu_item('Dashboard', on_click=lambda: ui.navigate.to("/donor/dashboard")).props('icon=dashboard')
-                    ui.menu_item('Find a Drive', on_click=lambda: ui.navigate.to("/donor/dashboard")).props('icon=search')
-                    ui.menu_item('My Impact', on_click=lambda: ui.navigate.to("/donor/dashboard")).props('icon=heart') # Placeholder
+                    ui.menu_item('Find a Drive', on_click=lambda: ui.navigate.to("/donor/dashboard#find_drive")).props('icon=search')
+                    ui.menu_item('My Impact', on_click=lambda: ui.navigate.to("/donor/dashboard#impacts")).props('icon=heart') # Placeholder
                     ui.menu_item('My Profile', on_click=lambda: ui.navigate.to("/donor/profile")).props('icon=account_circle')
                     ui.menu_item('Logout', on_click=lambda: ui.navigate.to("/donor/login")).props('icon=logout')
                     ui.menu_item('Settings').props('icon=settings')
