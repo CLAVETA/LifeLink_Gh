@@ -8,9 +8,8 @@ def donor_header():
                 ui.link("LifeLink GH","/").classes("no-underline text-xl font-bold text-gray-700")
             ui.space()
             with ui.row().classes("gap-6 mt-3 md:mt-0"):
-                # ui.link("Home","/").classes("no-underline text-gray-700 hover:text-red transition")
                 ui.link("About","/about").classes("no-underline text-gray-700 hover:text-red transition")
-                ui.link("Education","/education").classes("no-underline text-gray-700 hover:text-red transition")
+                ui.link("Education","/user_education").classes("no-underline text-gray-700 hover:text-red transition")
                 ui.link("Contact","/about#contact").classes("no-underline text-gray-700 hover:text-red transition")
                 ui.link("FAQs", "/").classes("no-underline text-gray-700 hover:text-red transition")
             ui.space()
@@ -18,8 +17,8 @@ def donor_header():
             with ui.button(icon='person', color='primary').props('flat round'):
                 with ui.menu():
                     ui.menu_item('Dashboard', on_click=lambda: ui.navigate.to("/donor/dashboard")).props('icon=dashboard')
-                    ui.menu_item('Find a Drive', on_click=lambda: ui.navigate.to("/donor/dashboard")).props('icon=search')
-                    ui.menu_item('My Impact', on_click=lambda: ui.navigate.to("/donor/dashboard")).props('icon=heart') # Placeholder
+                    ui.menu_item('Find a Drive', on_click=lambda: ui.navigate.to("/donor/dashboard#find_drive")).props('icon=search')
+                    ui.menu_item('My Impact', on_click=lambda: ui.navigate.to("/donor/dashboard#impacts")).props('icon=heart') # Placeholder
                     ui.menu_item('My Profile', on_click=lambda: ui.navigate.to("/donor/profile")).props('icon=account_circle')
                     ui.menu_item('Logout', on_click=lambda: ui.navigate.to("/donor/login")).props('icon=logout')
                     ui.menu_item('Settings').props('icon=settings')
