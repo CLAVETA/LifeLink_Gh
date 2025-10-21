@@ -8,31 +8,31 @@ TEXT_DARK = "#221010"
 @ui.page("/donor/donation_request")
 def donation_request_page():
 
-    # # ---------- HEADER ----------
-    # with ui.header().classes("bg-white shadow-md px-6 py-3 flex justify-between items-center sticky top-0 z-50"):
-    #     with ui.row().classes("items-center gap-2"):
-    #         ui.icon("favorite").classes("text-red-600 text-3xl")
-    #         ui.label("LiveLink").classes("text-2xl font-bold text-gray-900")
+    # ---------- HEADER ----------
+    with ui.header().classes("bg-white shadow-md px-6 py-3 flex justify-between items-center sticky top-0 z-50"):
+        with ui.row().classes("items-center gap-2"):
+            ui.icon("favorite").classes("text-red-600 text-3xl")
+            ui.label("LiveLink").classes("text-2xl font-bold text-gray-900")
 
-    #     with ui.row().classes("hidden md:flex items-center gap-6"):
-    #         ui.link("Home", "#").classes("text-gray-700 hover:text-red-600 transition-colors")
-    #         ui.link("About", "#").classes("text-gray-700 hover:text-red-600 transition-colors")
-    #         ui.link("Contact","/about#contact").classes("text-gray-700 hover:text-red-600 transition-colors")
+        with ui.row().classes("hidden md:flex items-center gap-6"):
+            ui.link("Home", "#").classes("text-gray-700 hover:text-red-600 transition-colors")
+            ui.link("About", "#").classes("text-gray-700 hover:text-red-600 transition-colors")
+            ui.link("Contact","/about#contact").classes("text-gray-700 hover:text-red-600 transition-colors")
 
-    #     with ui.row().classes("items-center gap-3"):
-    #         ui.button("Donate Now", color=PRIMARY_COLOR).classes(
-    #             "text-white font-semibold rounded-lg hover:bg-red-700 transition-all"
-    #         )
-    #         with ui.button(icon="notifications").classes(
-    #             "relative bg-white text-gray-700 rounded-full hover:bg-gray-100 transition"
-    #         ):
-    #             with ui.element("span").classes("absolute top-0 right-0 flex h-3 w-3").props(
-    #     "style='transform: translate(25%, -25%)'"
-    # ):
-    #                 ui.html("""
-    #                     <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75"></span>
-    #                     <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
-    #                 """, sanitize=False)
+        with ui.row().classes("items-center gap-3"):
+            ui.button("Donate Now", color=PRIMARY_COLOR).classes(
+                "text-white font-semibold rounded-lg hover:bg-red-700 transition-all"
+            )
+            with ui.button(icon="notifications").classes(
+                "relative bg-white text-gray-700 rounded-full hover:bg-gray-100 transition"
+            ):
+                with ui.element("span").classes("absolute top-0 right-0 flex h-3 w-3").props(
+        "style='transform: translate(25%, -25%)'"
+    ):
+                    ui.html("""
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                    """, sanitize=False)
 
     # ---------- MAIN CONTENT ----------
     with ui.row().classes("justify-center items-center py-12 px-4"):
