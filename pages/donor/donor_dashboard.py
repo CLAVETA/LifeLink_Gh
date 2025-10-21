@@ -1,23 +1,32 @@
 from nicegui import ui, app
-import asyncio 
+import asyncio
 import requests
 from utils.api import (
     base_url,
     get_my_donation_history,
     get_donor_profile,
 )
-
-app.add_static_files("/assets", "assets")
-
-# components
 from components.donor_header import donor_header
 from components.donor_sidebar import donor_sidebar
 
 app.add_static_files("/assets", "assets")
 Timeout = 10
 
+def footer():
+    with ui.row().classes("flex flex-col md:flex-row items-center justify-between px-7 w-full bg-gray-50 py-5 text-sm mt-auto text-gray-500"):
+            ui.image("/assets/logo.png").classes("w-24 h-20") 
+            ui.label("© 2025 LifeLink. All rights reserved.").classes("mb-3 md:mb-0 text-xl hover:text-red")
+            with ui.row().classes("gap-3"):
+                ui.link("About","/about").classes("no-underline text-gray-700 hover:text-red transition text-xl")
+                ui.link("Contact","/about#contact").classes("no-underline hover:text-red text-gray-700 text-xl transition")
+                ui.link("Privacy Policy").classes("no-underline text-gray-700 hover:text-red transition text-xl")            
+            with ui.row().classes("gap-6"):
+                ui.html('<i class="fa-brands fa-square-linkedin text-xl hover:text-red-600 transition"></i>', sanitize=False)
+                ui.html('<i class="fa-brands fa-instagram text-xl hover:text-red-600 transition"></i>', sanitize=False)
+                ui.html('<i class="fa-brands fa-facebook text-xl hover:text-red-600 transition"></i>', sanitize=False)
 
-# ---- FETCH FUNCTIONS ----
+
+# -------- FETCH HELPERS ----------
 async def fetch_data(url: str):
     try:
         loop = asyncio.get_event_loop()
@@ -27,6 +36,7 @@ async def fetch_data(url: str):
     except Exception as e:
         print(f"Fetch error: {e}")
     return None
+
 
 async def fetch_dashboard_data():
     """Fetch donor data concurrently (faster page load)."""
@@ -47,9 +57,10 @@ async def fetch_dashboard_data():
         return [], {"name": "Donor", "blood_group": "-", "total_donations": 0}
 
 
-# ---- DONATION HISTORY SECTION ----
+# -------- DONATION HISTORY COMPONENT ----------
 def donation_history_section(donation_history=None, loading=False):
-    """Render donation history with grid/list toggle and shimmer loading effect."""
+    """Render donation history with list/grid toggle and shimmer loader."""
+    donation_history = donation_history or []
 
     # Updated column definitions to match backend schema
     COLUMNS = [
@@ -60,12 +71,11 @@ def donation_history_section(donation_history=None, loading=False):
         {'name': 'status', 'label': 'STATUS', 'field': 'status', 'align': 'center'},
     ]
 
-    # State for view toggle
-    view_mode = ui.label('list').props('hidden')
+    view_mode = ui.label('table').props('hidden')
     history_container = ui.column().classes("w-full mt-4")
 
     def render_list_view():
-        """Render as table/list view."""
+        """Render donation history in a table format."""
         with history_container:
             ui.table(columns=COLUMNS, rows=donation_history, row_key='id') \
                 .props('flat bordered dense') \
@@ -76,12 +86,11 @@ def donation_history_section(donation_history=None, loading=False):
         with history_container:
             with ui.row().classes("w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"):
                 for donation in donation_history:
-                    with ui.card().classes("p-4 shadow-sm rounded-xl bg-white border-t-4 border-red-500 transition hover:shadow-md"):
-                        ui.label(donation.get('date', 'N/A')).classes("text-sm text-gray-500")
-                        ui.label(donation.get('location', 'N/A')).classes("text-lg font-semibold text-gray-800")
-                        with ui.row().classes("w-full justify-between items-center mt-2 text-sm"):
-                            ui.label(f"Type: {donation.get('type', '-') }").classes("text-red-600 font-medium")
-                            ui.label(f"ID: {donation.get('id', '')}").classes("text-gray-500")
+                    with ui.card().classes("p-4 shadow-sm rounded-xl bg-white border-t-4 border-red-500 hover:shadow-md transition"):
+                        ui.label(f"ID: {donation.get('id', 'N/A')}").classes("text-sm text-gray-500")
+                        ui.label(donation.get('donation_date', 'N/A')).classes("text-lg font-semibold text-gray-800")
+                        ui.label(donation.get('location', 'N/A')).classes("text-gray-600 text-sm mt-1")
+                        ui.label(f"Recipient: {donation.get('recipient_info', '-') }").classes("text-gray-600 text-sm mt-1")
                         ui.badge(donation.get('status', 'Pending'), color='green').classes("mt-2 px-3 py-1 text-xs font-semibold")
 
     def update_history_view():
@@ -97,29 +106,23 @@ def donation_history_section(donation_history=None, loading=False):
         update_history_view()
 
     def update_icons():
-        # Highlight the active button in red
-        if view_mode.text == 'list':
+        if view_mode.text == 'table':
             list_btn.props('flat color=red')
             grid_btn.props('flat color=gray')
         else:
             list_btn.props('flat color=gray')
             grid_btn.props('flat color=red')
 
-    # Donation History Card
+    # Render component
     with ui.card().classes("w-full p-6 shadow-lg rounded-xl bg-white mt-6"):
-        # --- Header Section (fixed order) ---
         with ui.row().classes("w-full justify-between items-center mb-4 border-b pb-4"):
             ui.label("Donation History").classes("text-xl font-semibold text-gray-800")
-
-            # Modern icon toggle (FontAwesome)
             with ui.row().classes("items-center gap-2"):
-                list_btn = ui.button(icon="fa-solid fa-list", on_click=lambda: toggle_view('list')).props('flat round dense')
+                list_btn = ui.button(icon="fa-solid fa-list", on_click=lambda: toggle_view('table')).props('flat round dense')
                 grid_btn = ui.button(icon="fa-solid fa-grip", on_click=lambda: toggle_view('grid')).props('flat round dense')
                 update_icons()
 
-        # --- Content Section ---
         if loading:
-            # Shimmer loader placeholder
             with ui.column().classes("w-full animate-pulse space-y-4"):
                 for _ in range(4):
                     ui.row().classes("h-20 bg-gray-200 rounded-lg")
@@ -128,116 +131,59 @@ def donation_history_section(donation_history=None, loading=False):
             update_history_view()
 
 
-# ---- MAIN DASHBOARD PAGE ----
+# -------- DASHBOARD PAGE ----------
 @ui.page("/donor/dashboard")
 async def donor_dashboard_page():
     """Donor dashboard — async optimized and API-integrated."""
     ui.add_head_html('<script src="https://kit.fontawesome.com/6704ceb212.js" crossorigin="anonymous"></script>')
     ui.query(".nicegui-content").classes("m-0 p-0 gap-0")
 
+    # Layout
     with ui.header(elevated=True).classes('bg-white dark:bg-gray-800 text-black dark:text-white'):
         donor_header()
     with ui.left_drawer(bordered=True).classes('bg-gray-100 dark:bg-gray-900'):
         donor_sidebar()
 
-    # Create a parent container that we can later clear
     dashboard_container = ui.column().classes("flex-grow w-full p-4 md:p-8")
 
-    # Show shimmer while data loads
+    # Instant shimmer on load
     with dashboard_container:
-        donation_history_section([], loading=True)
-        ui.label("Loading donor data...").classes("text-gray-500 text-center mb-6")
-
-    # Fetch donor data (simulate or call actual function)
-    donation_history, donor_profile = await fetch_dashboard_data()
-
-    # Clear loading content
-    dashboard_container.clear()
-
-    # Re-render real dashboard
-    with dashboard_container:
-        # Header section
         with ui.row().classes("w-full items-center justify-between mb-6"):
             ui.label("Donor Dashboard").classes("text-3xl font-bold text-gray-800")
-            ui.label(f"Welcome, {donor_profile.get('name', 'Donor')}!").classes("text-lg text-gray-600 sm:block")
+            ui.label("Loading donor profile...").classes("text-lg text-gray-600 sm:block")
+        donation_history_section([], loading=True)
 
-        # Donation History Section
-        donation_history_section(donation_history)
+    # Background data loading (non-blocking)
+    async def update_dashboard():
+        donation_history, donor_profile = await fetch_dashboard_data()
 
-# @ui.page("/donor/dashboard")
-# async def donor_dashboard_page():
-#     """Main donor dashboard page with live backend data."""
-#     ui.add_head_html('<script src="https://kit.fontawesome.com/6704ceb212.js" crossorigin="anonymous"></script>')
-#     ui.query(".nicegui-content").classes("m-0 p-0 gap-0")
+        dashboard_container.clear()
+        with dashboard_container:
+            with ui.row().classes("w-full items-center justify-between mb-6"):
+                ui.label("Donor Dashboard").classes("text-3xl font-bold text-gray-800")
+                ui.label(f"Welcome, {donor_profile.get('name', 'Donor')}!").classes("text-lg text-gray-600 sm:block")
 
-#     # Header & Sidebar
-#     with ui.header(elevated=True).classes('bg-white dark:bg-gray-800 text-black dark:text-white'):
-#         donor_header()
-#     with ui.left_drawer(bordered=True).classes('bg-gray-100 dark:bg-gray-900'):
-#         donor_sidebar()
+            # Render fetched donation history
+            donation_history_section(donation_history)
 
-#     with ui.column().classes("flex-grow w-full p-4 md:p-8"):
+            # Simple impact section
+            with ui.element("section").props("id=impacts").classes("w-full py-12 px-4 md:px-12 bg-white mt-6"):
+                ui.label("My Impacts").classes("text-2xl font-bold text-gray-800 mb-4")
+                with ui.row().classes("grid grid-cols-1 md:grid-cols-4 gap-4 w-full"):
+                    stats = [
+                        ("Total Donations", donor_profile.get("total_donations", 0), "red-500"),
+                        ("Last Donation Date", donor_profile.get("last_donation", "N/A"), "blue-500"),
+                        ("Lives Saved", donor_profile.get("lives_saved", 0), "green-500"),
+                        ("Impact Score", donor_profile.get("impact_score", "A"), "purple-500"),
+                    ]
+                    for label, value, color in stats:
+                        with ui.card().classes(f"p-4 shadow-md rounded-xl border-l-4 border-{color} bg-white"):
+                            ui.label(label).classes("text-gray-600 text-lg")
+                            ui.label(str(value)).classes("text-3xl font-bold text-gray-900")
 
-#         # Show shimmer while loading
-#         donation_history_section([], is_loading=True)
+    asyncio.create_task(update_dashboard())
 
-#         # Fetch data asynchronously
-#         donation_history, donor_profile = await fetch_dashboard_data()
 
-#         # Clear and re-render once data arrives
-#         ui.clear()
-#         with ui.column().classes("flex-grow w-full p-4 md:p-8"):
-#             # Dashboard Header
-#             with ui.row().classes("w-full items-center justify-between mb-6"):
-#                 ui.label("Donor Dashboard").classes("text-3xl font-bold text-gray-800")
-#                 ui.label(f"Welcome, {donor_profile.get('name', 'Donor')}!").classes("text-lg text-gray-600 sm:block")
 
-#             # Donation History Section (loaded)
-#             donation_history_section(donation_history)
-
-            # Impact Section
-    with ui.element("section").props("id=impacts").classes("w-full py-20 px-10 md:px-20 bg-white"):
-        ui.label("My Impacts").classes("text-3xl font-bold text-gray-800 mt-8")
-        with ui.row().classes("grid grid-cols-1 md:grid-cols-4 gap-4 w-full mb-8"):
-                with ui.card().classes("p-4 shadow-lg rounded-xl bg-white border-l-4 border-red-500"):
-                    ui.label("Total Donations").classes("text-2xl font-medium text-gray-500")
-                    ui.label(str(donor_profile.get("total_donations", 0))).classes("text-3xl font-extrabold text-gray-900 mt-1")
-
-                with ui.card().classes("p-4 shadow-lg rounded-xl bg-white border-l-4 border-blue-500"):
-                    ui.label("Last Donation").classes("text-2xl font-medium text-gray-500")
-                    ui.label(donor_profile.get("last_donation", "N/A")).classes("text-sm font-extrabold text-gray-900 mt-1")
-
-                with ui.card().classes("p-4 shadow-lg rounded-xl bg-white border-l-4 border-green-500"):
-                    ui.label("Lives Saved").classes("text-2xl font-medium text-gray-500")
-                    ui.label(str(donor_profile.get("lives_saved", 0))).classes("text-3xl font-extrabold text-gray-900 mt-1")
-
-                with ui.card().classes("p-4 shadow-lg rounded-xl bg-white border-l-4 border-green-500"):
-                    ui.label("Impact Score").classes("text-2xl font-medium text-gray-500")
-                    ui.label(donor_profile.get("impact_score", "A")).classes("text-3xl font-extrabold text-gray-900 mt-1")
-
-            # Schedule Section
-    with ui.element("section").props("id=find_drive").classes("w-full py-20 px-10 md:px-20 bg-white"):
-        with ui.card().classes("p-6 shadow-lg rounded-xl bg-white"):
-                ui.label("Upcoming Appointments").classes("text-xl font-semibold text-gray-800 mb-4")
-                next_appt = donor_profile.get("next_appointment", None)
-                if next_appt:
-                    ui.label(f"{next_appt['date']} at {next_appt['location']}").classes("text-gray-700")
-                    ui.button("Cancel", color="red").props("flat dense")
-                else:
-                    ui.label("No upcoming appointments").classes("text-gray-500")
-                    ui.label("Schedule a new appointment to continue saving lives")
-                    ui.button("Find a Drive", icon="add_circle").props("no-caps").classes(
-                        "bg-red text-white px-6 py-3 mt-3 rounded-xl shadow-lg hover:bg-red transition text-lg"
-                    )
-        # 4. Footer (Consistent with the style used in the other pages)
-    with ui.row().classes("flex flex-col md:flex-row items-center justify-between px-7 w-full bg-gray-50 py-5 text-sm mt-auto text-gray-500"):
-            ui.image("/assets/logo.png").classes("w-24 h-20") 
-            ui.label("© 2025 LifeLink. All rights reserved.").classes("mb-3 md:mb-0 text-xl hover:text-red")
-            with ui.row().classes("gap-3"):
-                ui.link("About","/about").classes("no-underline text-gray-700 hover:text-red transition text-xl")
-                ui.link("Contact","/about#contact").classes("no-underline hover:text-red text-gray-700 text-xl transition")
-                ui.link("Privacy Policy").classes("no-underline text-gray-700 hover:text-red transition text-xl")            
-            with ui.row().classes("gap-6"):
-                ui.html('<i class="fa-brands fa-square-linkedin text-xl hover:text-red-600 transition"></i>', sanitize=False)
-                ui.html('<i class="fa-brands fa-instagram text-xl hover:text-red-600 transition"></i>', sanitize=False)
-                ui.html('<i class="fa-brands fa-facebook text-xl hover:text-red-600 transition"></i>', sanitize=False)
+    # 4. Footer (Consistent with the style used in the other pages)
+    footer()
