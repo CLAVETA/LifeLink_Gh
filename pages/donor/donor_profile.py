@@ -1,214 +1,133 @@
-from nicegui import ui, client
+from nicegui import ui
 import requests
-import os
 from utils.api import base_url
-from components.donor_sidebar import donor_sidebar
-from components.donor_header import donor_header
-from pages.donor.donor_dashboard import footer
+import json
 
-# Extend JavaScript timeout (prevents TimeoutError)
-client.Client.JAVASCRIPT_TIMEOUT = 10.0
-
-API_PROFILE_GET = f"{base_url}/donors/me"
-API_PROFILE_UPDATE = f"{base_url}/donors/me/profile"
-
-# Define local assets folder path
-ASSETS_PATH = os.path.join("assets", "profile_pics")
+PROFILE_ENDPOINT = f"{base_url}/donors/me/profile"
 
 
-@ui.page("/donor/profile")
-def donor_profile_page():
-    """Donor Profile Page — loads profile image from local assets folder if available."""
+def donor_sidebar(auth_token: str = None):
+    # Initial donor info with default values
+    donor_info = {
+        "name": "Name",
+        "blood_type": "None",
+        "donor_id": "None",
+        "location": "N/A",
+        "profile_picture_url": "https://placehold.co/100x100/A00000/FFFFFF?text=JD",
+        "is_available": False,
+    }
 
-    # ---------- HEAD + STYLE ----------
-    ui.add_head_html('''
-        <script src="https://kit.fontawesome.com/6704ceb212.js" crossorigin="anonymous"></script>
-        <style>
-            .success-overlay {
-                position: fixed;
-                top: 0; left: 0; right: 0; bottom: 0;
-                background: rgba(255, 255, 255, 0.8);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                z-index: 9999;
-                animation: fadeOut 2.5s ease forwards;
-            }
-            .checkmark-circle {
-                width: 90px;
-                height: 90px;
-                border-radius: 50%;
-                background-color: #22c55e;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                animation: scaleIn 0.4s ease-out;
-            }
-            .checkmark {
-                font-size: 40px;
-                color: white;
-                transform: scale(0);
-                animation: scaleIn 0.5s ease-out forwards 0.2s;
-            }
-            .success-text {
-                margin-top: 15px;
-                font-size: 18px;
-                font-weight: 600;
-                color: #166534;
-                animation: fadeIn 0.8s ease-in-out;
-            }
-            @keyframes fadeOut {
-                0% {opacity: 1;}
-                80% {opacity: 1;}
-                100% {opacity: 0; visibility: hidden;}
-            }
-            @keyframes scaleIn {
-                0% {transform: scale(0);}
-                100% {transform: scale(1);}
-            }
-            @keyframes fadeIn {
-                from {opacity: 0;}
-                to {opacity: 1;}
-            }
-        </style>
-    ''')
-
-    ui.query(".nicegui-content").classes("m-0 p-0 gap-0")
-
-    # ---------- HEADER + SIDEBAR ----------
-    with ui.header(elevated=True).classes('bg-white dark:bg-gray-800 text-black dark:text-white'):
-        donor_header()
-    with ui.left_drawer(bordered=True).classes('bg-gray-100 dark:bg-gray-900'):
-        donor_sidebar()
-
-    donor_profile = {}
-
-    # ---------- LOADING SPINNER ----------
-    spinner_card = ui.card().classes(
-        "absolute inset-0 flex flex-col items-center justify-center bg-white/80 z-50 backdrop-blur-sm"
-    )
-    ui.spinner(size="lg", color="red").classes("mb-4")
-    ui.label("Loading profile information...").classes("text-gray-600 text-sm font-medium")
-
-    # ---------- FETCH PROFILE ----------
-    def fetch_profile():
+    # Fetch donor profile from backend if token exists
+    if auth_token:
         try:
-            res = requests.get(API_PROFILE_GET, timeout=10)
-            if res.status_code == 200:
-                return res.json()
+            headers = {"Authorization": f"Bearer {auth_token}"}
+            response = requests.get(PROFILE_ENDPOINT, headers=headers, timeout=10)
+            if response.status_code == 200:
+                data = response.json()
+                donor_info["name"] = data.get("full_name", "Donor").upper()
+                donor_info["blood_type"] = data.get("blood_type", "None")
+                donor_info["location"] = data.get("location", "N/A")
+                donor_info["donor_id"] = str(data.get("donor_id", "0000"))
             else:
-                ui.notify("Failed to load profile", color="red")
+                ui.notify(f"Failed to load donor profile ({response.status_code})", color="red")
         except Exception as e:
-            print("Error fetching profile:", e)
-            ui.notify("Unable to connect to server", color="red")
-        return {}
+            ui.notify(f"Error fetching donor data: {e}", color="red")
+    else:
+        ui.notify("No authentication token found. Please log in.", color="red")
 
-    donor_profile.update(fetch_profile())
-    spinner_card.delete()
+    # Refreshable label for availability status
+    @ui.refreshable
+    def availability_status_text(is_available):
+        status_text = "Available" if is_available else "Unavailable"
+        ui.label(status_text).classes("text-lg font-medium text-gray-700")
 
-    # ---------- SUCCESS CHECKMARK ----------
-    def show_success_checkmark():
-        with ui.element("div").classes("success-overlay") as overlay:
-            with ui.element("div").classes("checkmark-circle"):
-                ui.icon("check", size="40px").classes("checkmark")
-            ui.label("Profile Updated!").classes("success-text")
-        ui.timer(2.5, lambda: overlay.delete(), once=True)
+    # Toggle handler for availability status
+    def handle_availability_toggle(e):
+        donor_info["is_available"] = e.value
+        availability_status_text.refresh(donor_info["is_available"])
+        new_status = "Available" if e.value else "Unavailable"
+        ui.notify(f"Updating availability to: {new_status}. API call pending...", color="info")
 
-    # ---------- REFRESH PROFILE UI ----------
-    def refresh_profile_ui():
-        name_input.value = donor_profile.get("full_name", "-") or "-"
-        phone_input.value = donor_profile.get("phone_number", "-") or "-"
-        email_input.value = donor_profile.get("email", "-") or "-"
-        location_input.value = donor_profile.get("location", "-") or "-"
-        blood_input.value = donor_profile.get("blood_type", "-") or "-"
-        status_input.value = donor_profile.get("availability_status", "-") or "-"
+    # Donor card popup
+    def show_donor_card():
+        with ui.dialog() as dialog, ui.card().classes('p-6 w-full max-w-md rounded-2xl shadow-2xl bg-white'):
+            with ui.column().classes('items-center space-y-4'):
+                ui.label("My Donor Card").classes("text-2xl font-bold text-red-700 self-start")
 
+                with ui.card().classes('w-90 items-center border border-gray-300 rounded-xl p-4 shadow-md bg-white'):
+                    ui.image('assets/donor_profile.png').classes("w-20 h-20 rounded-full object-cover border-2 border-red-600")
+                    ui.label("Life Link GH").classes("text-lg font-semibold text-gray-800 mb-2")
+                    ui.separator()
+                    ui.label("NAME").classes("text-xs text-gray-500 mt-2")
+                    ui.label(donor_info["name"]).classes("text-xl font-bold text-gray-900")
 
-    # ---------- EDIT MODAL ----------
-    with ui.dialog() as edit_modal, ui.card().classes("w-full max-w-2xl p-6"):
-        ui.label("Edit Profile").classes("text-xl font-bold mb-4 text-gray-800")
+                    ui.label("BLOOD TYPE").classes("text-xs text-gray-500 mt-3")
+                    ui.label(donor_info["blood_type"]).classes("text-2xl font-extrabold text-red-600")
 
-        with ui.column().classes("gap-4 w-full"):
-            name_edit = ui.input(label="Full Name", value=donor_profile.get("full_name", "")).props("outlined dense")
-            phone_edit = ui.input(label="Phone Number", value=donor_profile.get("phone_number", "")).props("outlined dense")
-            email_edit = ui.input(label="Email", value=donor_profile.get("email", "")).props("outlined dense")
-            location_edit = ui.input(label="Location", value=donor_profile.get("location", "")).props("outlined dense")
-            blood_edit = ui.select(
-                ["O+", "O-", "A+", "A-", "B+", "B-", "AB+", "AB-"],
-                label="Blood Type",
-                value=donor_profile.get("blood_type", "O+"),
-            ).props("outlined dense")
-            status_edit = ui.select(
-                ["Available", "Unavailable"],
-                label="Availability Status",
-                value=donor_profile.get("availability_status", "Available"),
-            ).props("outlined dense")
+                    ui.label("LOCATION").classes("text-xs text-gray-500 mt-3")
+                    ui.label(donor_info["location"]).classes("text-lg font-semibold text-red-500")
 
-        # ---- UPDATE PROFILE ----
-        def update_profile():
-            payload = {
-                "full_name": name_edit.value,
-                "phone_number": phone_edit.value,
-                "email": email_edit.value,
-                "location": location_edit.value,
-                "blood_type": blood_edit.value,
-                "availability_status": status_edit.value,
-            }
+                    ui.separator().classes("my-3")
 
-            try:
-                res = requests.put(API_PROFILE_UPDATE, json=payload, timeout=15)
-                if res.status_code in (200, 201):
-                    updated_data = res.json()
-                    donor_profile.update(updated_data)
-                    refresh_profile_ui()
-                    ui.notify("Profile updated successfully!", color="green")
-                    show_success_checkmark()
-                    edit_modal.close()
-                else:
-                    ui.notify("Failed to update profile", color="red")
-            except Exception as e:
-                print("Error updating profile:", e)
-                ui.notify("Error connecting to backend", color="red")
+                    with ui.row().classes("justify-between items-center w-full"):
+                        ui.label("Valued Blood Donor").classes("text-sm text-gray-600 italic")
+                        with ui.column().classes("items-center"):
+                            ui.icon("bloodtype").classes("text-red-600 text-4xl")
+                            ui.label(f"ID: {donor_info['donor_id']}").classes("text-xs font-semibold tracking-wide text-gray-600")
 
-        with ui.row().classes("justify-end w-full mt-4"):
-            ui.button("Cancel", on_click=edit_modal.close).props("outline").classes("text-gray-600")
-            ui.button("Save Changes", on_click=update_profile).classes("bg-red-600 text-white")
+                ui.button("Print Card", icon="print") \
+                    .classes("w-full bg-green-500 text-white hover:bg-green-600 mt-3 rounded-lg") \
+                    .on_click(lambda: ui.run_javascript("window.print();"))
 
-    # ---------- MAIN PROFILE UI ----------
-    with ui.column().classes("flex-grow w-full p-6 bg-gray-50 min-h-screen"):
-        with ui.row().classes("items-center justify-between mb-4 w-full"):
-            ui.label("My Profile").classes("text-3xl font-bold text-gray-800")
-            ui.button("Edit Profile", icon="edit", on_click=edit_modal.open).props("flat no-caps").classes(
-                "text-red-600 hover:bg-red-100"
-            )
+                ui.button("Close", icon="close") \
+                    .props("outline no-caps") \
+                    .classes("w-full text-gray-600 hover:bg-gray-100") \
+                    .on_click(dialog.close)
 
-        with ui.card().classes("w-full p-6 shadow-lg rounded-xl bg-white mb-6"):
-            with ui.row().classes("items-center gap-4"):
-                ui.image('assets\donor_profile.png').classes("w-20 h-20 rounded-full object-cover border-2 border-red-600")
-                ui.label(donor_profile.get("full_name") or "Donor Name").classes("text-xl font-semibold text-gray-800")
+        dialog.open()
 
+    # Sidebar layout
+    with ui.column().classes("w-full bg-white shadow-xl rounded-xl p-4 space-y-4"):
         with ui.card().classes("w-full p-6 shadow-lg rounded-xl bg-white"):
-            ui.label("Profile Information").classes("text-xl font-semibold text-gray-800 mb-4 border-b pb-2")
-            with ui.row().classes("grid grid-cols-1 md:grid-cols-2 gap-4 w-full mt-4"):
-                with ui.column():
-                    ui.label("Full Name").classes("text-xs font-medium text-gray-500")
-                    name_input = ui.input().props("outlined dense readonly")
-                with ui.column():
-                    ui.label("Phone Number").classes("text-xs font-medium text-gray-500")
-                    phone_input = ui.input().props("outlined dense readonly")
-                with ui.column():
-                    ui.label("Email Address").classes("text-xs font-medium text-gray-500")
-                    email_input = ui.input().props("outlined dense readonly")
-                with ui.column():
-                    ui.label("Location").classes("text-xs font-medium text-gray-500")
-                    location_input = ui.input().props("outlined dense readonly")
-                with ui.column():
-                    ui.label("Blood Type").classes("text-xs font-medium text-gray-500")
-                    blood_input = ui.input().props("outlined dense readonly")
-                with ui.column():
-                    ui.label("Availability Status").classes("text-xs font-medium text-gray-500")
-                    status_input = ui.input().props("outlined dense readonly")
+            ui.label("My Information").classes("text-xl font-semibold text-gray-800 mb-4")
 
-    refresh_profile_ui()
+            # Blood Group Section
+            with ui.row().classes("w-full items-center space-x-4 mb-4"):
+                ui.icon("water_drop").classes("text-4xl text-red-600")
+                with ui.column().classes("gap-0"):
+                    ui.label("Blood Group").classes("text-sm text-gray-500")
+                    ui.label(donor_info["blood_type"]).classes("text-3xl font-bold text-red-600")
 
-    footer()
+            ui.separator().classes("my-4")
+
+            # Quick Actions
+            with ui.column().classes("w-full space-y-3"):
+                ui.button("Edit Profile", icon="edit") \
+                    .props("outline no-caps") \
+                    .classes("w-full bg-red-200 text-red border-gray-300 hover:bg-red-100") \
+                    .on("click", lambda: ui.navigate.to("/donor/profile"))
+
+        # Availability Section
+        ui.separator().classes("my-4")
+        with ui.card().classes("w-full p-4 rounded-xl shadow-lg bg-red-50 ring-2 ring-red-100"):
+            ui.label("Update Availability").classes("text-base font-semibold text-red-700 mb-2")
+
+            with ui.row().classes("w-full items-center justify-between"):
+                # Left: Icon and status
+                with ui.row().classes("items-center space-x-4"):
+                    with ui.card().classes("p-3 bg-white rounded-lg shadow-sm"):
+                        ui.icon("favorite", size="2xl").classes("text-red-600")
+                    with ui.column().classes("gap-0"):
+                        ui.label("Status").classes("text-sm text-gray-500")
+                        availability_status_text(donor_info["is_available"])
+
+                # Right: The Switch
+                ui.switch(value=donor_info["is_available"], on_change=handle_availability_toggle) \
+                    .props('color="red" size="lg"')
+
+        # Donor Card Button
+        with ui.column().classes("w-full space-y-3 mt-4"):
+            ui.button("View My Donor Card", icon="medical_services") \
+                .props("flat no-caps") \
+                .classes("w-full text-gray bg-red-100 hover:bg-red-200") \
+                .on_click(show_donor_card)
