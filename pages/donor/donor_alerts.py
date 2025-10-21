@@ -1,4 +1,5 @@
 from nicegui import ui, app
+from pages.donor.donor_dashboard import footer
 
 # Define your app's color theme
 PRIMARY_COLOR = "#ec1313"
@@ -12,7 +13,7 @@ def donation_request_page():
     with ui.header().classes("bg-white shadow-md px-6 py-3 flex justify-between items-center sticky top-0 z-50"):
         with ui.row().classes("items-center gap-2"):
             ui.icon("favorite").classes("text-red-600 text-3xl")
-            ui.label("LiveLink").classes("text-2xl font-bold text-gray-900")
+            ui.label("Lifelink GH").classes("text-2xl font-bold text-gray-900")
 
         with ui.row().classes("hidden md:flex items-center gap-6"):
             ui.link("Home", "#").classes("text-gray-700 hover:text-red-600 transition-colors")
@@ -24,7 +25,7 @@ def donation_request_page():
                 "text-white font-semibold rounded-lg hover:bg-red-700 transition-all"
             )
             with ui.button(icon="notifications").classes(
-                "relative bg-white text-gray-700 rounded-full hover:bg-gray-100 transition"
+                "relative bg-red text-gray-700 rounded-full hover:bg-gray-100 transition"
             ):
                 with ui.element("span").classes("absolute top-0 right-0 flex h-3 w-3").props(
         "style='transform: translate(25%, -25%)'"
@@ -71,5 +72,4 @@ def donation_request_page():
                     )
 
     # ---------- FOOTER ----------
-    with ui.footer().classes("bg-white border-t border-red-100 text-center py-4 text-gray-600"):
-        ui.label("© 2025 LiveLink. All rights reserved.")
+    footer()
