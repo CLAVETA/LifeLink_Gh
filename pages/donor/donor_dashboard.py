@@ -28,14 +28,17 @@ def footer():
 
 # -------- FETCH HELPERS ----------
 async def fetch_data(url: str):
-    try:
-        loop = asyncio.get_event_loop()
-        response = await loop.run_in_executor(None, lambda: requests.get(url, timeout=Timeout))
-        if response.status_code == 200:
-            return response.json()
-    except Exception as e:
-        print(f"Fetch error: {e}")
-    return None
+        # token = app.storage.user.get("access_token")
+        # headers = {"Authorization": f"Bearer {token}"} if token else {} 
+        # return requests.post(f"{base_url}/requests", data=data, headers=headers)   
+        try:
+            loop = asyncio.get_event_loop()
+            response = await loop.run_in_executor(None, lambda: requests.get(url, timeout=Timeout))
+            if response.status_code == 200:
+                return response.json()
+        except Exception as e:
+            print(f"Fetch error: {e}")
+        return None
 
 
 async def fetch_dashboard_data():
