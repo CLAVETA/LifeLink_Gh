@@ -27,10 +27,7 @@ def footer():
 
 
 # -------- FETCH HELPERS ----------
-async def fetch_data(url: str):
-        # token = app.storage.user.get("access_token")
-        # headers = {"Authorization": f"Bearer {token}"} if token else {} 
-        # return requests.post(f"{base_url}/requests", data=data, headers=headers)   
+async def fetch_data(url: str):  
         try:
             loop = asyncio.get_event_loop()
             response = await loop.run_in_executor(None, lambda: requests.get(url, timeout=Timeout))
