@@ -119,39 +119,39 @@ def donor_sidebar(auth_token: str = None):
                                 ui.button("Update Availability", icon="schedule").props("no-caps").classes("w-full bg-red-100 text-red-600 hover:bg-red-200")
                                 ui.button("View Medical History", icon="medical_services").props("flat no-caps").classes("w-full text-red-600 hover:bg-red-100").on("click", lambda: ui.navigate.to("/donor/profile"))
             
-            ui.separator().classes("my-4")
-            with ui.card().classes("w-full p-4 rounded-xl shadow-lg bg-red-50 ring-2 ring-red-100"):
-                ui.label("Update Availability") \
-                    .props("no-caps") \
-                    .classes("w-full bg-red-100 text-red-600 hover:bg-red-200")
-                with ui.row().classes("w-full items-center justify-between"):
+            # ui.separator().classes("my-4")
+            # with ui.card().classes("w-full p-4 rounded-xl shadow-lg bg-red-50 ring-2 ring-red-100"):
+            #     ui.label("Update Availability") \
+            #         .props("no-caps") \
+            #         .classes("w-full bg-red-100 text-red-600 hover:bg-red-200")
+            #     with ui.row().classes("w-full items-center justify-between"):
                     
-                    # Left side: Icon and Status Text
-                    with ui.row().classes("items-center space-x-4"):
-                        # Icon container matching the pink square
-                        with ui.card().classes("p-3 bg-white rounded-lg shadow-sm"):
-                             ui.icon("favorite", size="2xl").classes("text-red-600") 
+            #         # Left side: Icon and Status Text
+            #         with ui.row().classes("items-center space-x-4"):
+            #             # Icon container matching the pink square
+            #             with ui.card().classes("p-3 bg-white rounded-lg shadow-sm"):
+            #                  ui.icon("favorite", size="2xl").classes("text-red-600") 
                             
-                        with ui.column().classes("gap-0"):
-                            ui.label("Status").classes("text-sm text-gray-500")
-                            # Refreshable status text
-                            availability_status_text(donor_info["is_available"])
+            #             with ui.column().classes("gap-0"):
+            #                 ui.label("Status").classes("text-sm text-gray-500")
+            #                 # Refreshable status text
+            #                 availability_status_text(donor_info["is_available"])
 
-                    # Right side: The Switch
-                    # The `color="red"` prop in NiceGUI/Quasar maps to the visual style in the image
-                    ui.switch(value=donor_info["is_available"], on_change=handle_availability_toggle) \
-                        .props('color="red" size="lg"')
+            #         # Right side: The Switch
+            #         # The `color="red"` prop in NiceGUI/Quasar maps to the visual style in the image
+            #         ui.switch(value=donor_info["is_available"], on_change=handle_availability_toggle) \
+            #             .props('color="red" size="lg"')
                         
-            with ui.column().classes("w-full space-y-3"):
-                ui.button("Edit Profile", icon="edit") \
-                    .props("outline no-caps") \
-                    .classes("w-full text-gray-700 border-gray-300 hover:bg-gray-100") \
-                    .on("click", lambda: ui.navigate.to("/donor/profile"))
+            # with ui.column().classes("w-full space-y-3"):
+            #     ui.button("Edit Profile", icon="edit") \
+            #         .props("outline no-caps") \
+            #         .classes("w-full text-gray-700 border-gray-300 hover:bg-gray-100") \
+            #         .on("click", lambda: ui.navigate.to("/donor/profile"))
                 
 
-                # View Donor Card button
-                ui.button("View My Donor Card", icon="medical_services") \
-                    .props("flat no-caps") \
-                    .classes("w-full text-red-600 hover:bg-red-100") \
-                    .on_click(show_donor_card)
+            #     # View Donor Card button
+            #     ui.button("View My Donor Card", icon="medical_services") \
+            #         .props("flat no-caps") \
+            #         .classes("w-full text-red-600 hover:bg-red-100") \
+            #         .on_click(show_donor_card)
          
