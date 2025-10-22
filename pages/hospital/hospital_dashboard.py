@@ -1,6 +1,7 @@
 from nicegui import ui, app, run
 from utils.api import base_url
 import requests
+import json
 
 app.add_static_files("/assets", "assets")
 
@@ -33,8 +34,8 @@ async def _broadcast(data):
         ui.notify("Blood request broadcasted successfully!", color="positive")
         return ui.navigate.to("/hospital/dashboard")
     elif response.status_code == 401:
-        ui.notify("Unauthorized! Please log in again.", type="warning")
-        return ui.navigate.to("/hospital/login")
+        ui.notify("Session expired. Redirecting to login...", type="warning")
+        return ui.open("/hospital/login")
     else:
         ui.notify("Failed to broadcast blood request!", type="warning")
 
@@ -53,12 +54,34 @@ def hospital_dashboard_page():
                 ui.link("LifeLink GH", "/").classes("no-underline text-xl font-bold text-gray-700")
             with ui.row().classes("gap-6 mt-3 md:mt-0"):
                 ui.link("Dashboard", "/hospital/dashboard").classes("no-underline text-red-500 hover:text-red-500 transition")
-                ui.link("Donors", "").classes("no-underline text-gray-700 hover:text-red-500 transition")
-                ui.link("Requests", "/contact").classes("no-underline text-gray-700 hover:text-red-500 transition")
+                ui.link("Donors", "/hospital/dashboard#donors").classes("no-underline text-gray-700 hover:text-red-500 transition")
+                ui.link("Requests", "/hospital/dashboard#request").classes("no-underline text-gray-700 hover:text-red-500 transition")
                 ui.link("Education", "/education").classes("no-underline text-gray-700 hover:text-red-500 transition")
             with ui.row().classes("gap-4 items-center"):
-                ui.icon("notifications").classes("text-gray-700 text-2xl cursor-pointer")
-                ui.image("/assets/hero2.png").classes("w-10 h-10 rounded-full object-cover")
+                # Notification bell and count
+                notification_count = ui.label("0").classes("text-sm text-red-500 hidden")
+                notification_bell = ui.icon("notifications").classes("text-gray-700 text-2xl cursor-pointer")
+
+                async def update_notifications():
+                    # Simulate fetching notification count from backend
+                    count = app.storage.user.get("notification_count", 0)
+                    notification_count.set_text(str(count))
+                    if count > 0:
+                        notification_count.classes(remove="hidden")
+                        # Simulate beep sound
+                        print("Beep! New notification.")
+                    else:
+                        notification_count.classes(add="hidden")
+
+                # Periodically check for new notifications
+                ui.timer(5, update_notifications)
+
+                with ui.image("/assets/hero2.png").classes("w-10 h-10 rounded-full object-cover cursor-pointer"):
+                    with ui.menu():
+                        ui.menu_item("View Profile")
+                        ui.menu_item("Settings")
+                        ui.menu_item("Help")
+                        ui.menu_item("Logout", on_click=lambda: logout_modal.open())
 
         # main for request and donor matches
         with ui.row().classes("flex flex-col md:flex-row justify-center gap-6 w-full px-2 py-6"):
@@ -112,20 +135,21 @@ def hospital_dashboard_page():
 
             # Donor Matches Card
             with ui.column().classes("w-full md:w-[65%]"):
-                # Welcome label and hospital name (hospital name will be filled after fetching hospital info)
+                # Welcome label and hospital name
                 with ui.row().classes("items-center justify-center gap-3"):
                     ui.label("Welcome to your Dashboard!").classes(
                         "text-2xl font-semibold text-gray-800 mb-2 text-center"
                     )
                     hospital_name_label = ui.label("").classes("text-lg font-semibold text-gray-600 mb-2 text-center")
 
-                with ui.card().classes("w-full p-6 bg-white shadow-md rounded-md border border-red-100 border border-red-100"):
+                with ui.card().props("id=donors").classes("w-full p-6 bg-white shadow-md rounded-md border border-red-100"):
                     ui.label("Donor Matches").classes("text-xl font-bold text-gray-700 mb-2")
 
-                    with ui.row().classes("grid grid-cols-1 md:grid-cols-5 gap-4 w-full"):
-                        with ui.element("div").classes("flex flex-col col-span-3"):
+                    # Search filters
+                    with ui.row().classes("grid grid-cols-1 md:grid-cols-5 gap-4 w-full items-end"):
+                        with ui.element("div").classes("flex flex-col col-span-2"):
                             ui.label("Search").classes("text-sm text-left")
-                            dm_search = ui.input(placeholder="🔍 Search donors by name, location").props(
+                            dm_search = ui.input(placeholder="🔍 Enter hospital location").props(
                                 "flat outlined dense"
                             ).classes("bg-red-50 text-xs rounded-md")
 
@@ -137,158 +161,117 @@ def hospital_dashboard_page():
                             ).props("outlined dense").classes("bg-red-50 text-xs rounded-md")
 
                         with ui.element("div").classes("flex flex-col col-span-1"):
-                            ui.label("Distance").classes("text-sm text-left")
-                            dm_distance = ui.input(placeholder="Enter distance (km)").props("flat outlined dense").classes(
+                            ui.label("Distance (km)").classes("text-sm text-left")
+                            dm_distance = ui.input(placeholder="10").props("flat outlined dense").classes(
                                 "bg-red-50 text-xs rounded-md"
                             )
 
+                        # Search button (aligned at the bottom)
+                        with ui.element("div").classes("flex flex-col col-span-1 justify-end"):
+                            search_btn = ui.button("Search", on_click=lambda e: load_donor_matches()).props(
+                                "color=red unelevated"
+                            ).classes("text-xs font-semibold w-full")
+
+                    # Header row
                     with ui.row().classes(
-                        "grid grid-cols-5 gap-4 w-full bg-red-50 text-gray-700 font-semibold mt-3 p-2"
+                        "grid grid-cols-6 gap-4 w-full bg-red-50 text-gray-700 font-semibold mt-3 p-2"
                     ):
                         ui.label("DONOR NAME").classes("text-left")
                         ui.label("BLOOD TYPE").classes("text-left")
+                        ui.label("LOCATION").classes("text-left")
                         ui.label("DISTANCE").classes("text-left")
                         ui.label("AVAILABILITY").classes("text-left")
                         ui.label("CONTACT").classes("text-left")
 
-                    # Container for donor rows
+                    # Donor table container
                     donor_table = ui.column().classes("w-full")
 
                     async def load_donor_matches():
-                        token = app.storage.user.get('access_token')
-                        # Build query params required by API: blood_type, location_name, radius
+                        token = app.storage.user.get("access_token")
+
                         params = {}
-                        q = dm_search.value if hasattr(dm_search, 'value') else None
-                        if q:
-                            params['q'] = q
+                        blood_type = dm_blood.value if dm_blood.value != "All" else None
+                        if blood_type:
+                            params["blood_type"] = blood_type
 
-                        # blood_type is required; default to 'All' to indicate no filter if user didn't pick one
-                        bt = dm_blood.value if hasattr(dm_blood, 'value') else None
-                        if not bt:
-                            bt = 'All'
-                        params['blood_type'] = bt
+                        location_name = dm_search.value
+                        params["location_name"] = location_name
 
-                        # radius (in km) is required by backend; validate and default to 10 km
-                        dist = dm_distance.value if hasattr(dm_distance, 'value') else None
-                        if dist:
-                            try:
-                                radius = float(dist)
-                            except Exception:
-                                ui.notify('Distance must be a number (km).', type='warning')
-                                return
-                        else:
-                            radius = 10.0
-                        params['radius'] = radius
-
-                        # include hospital_id if available (some endpoints expect it)
-                        hospital_id = app.storage.user.get('hospital_id')
-                        if not hospital_id:
-                            # try decode from token (best-effort)
-                            token_payload = app.storage.user.get('access_token')
-                            if token_payload:
-                                try:
-                                    import base64, json
-                                    parts = token_payload.split('.')
-                                    if len(parts) >= 2:
-                                        payload_b64 = parts[1]
-                                        padding = '=' * (-len(payload_b64) % 4)
-                                        payload_b64 += padding
-                                        decoded = base64.urlsafe_b64decode(payload_b64.encode()).decode()
-                                        payload_json = json.loads(decoded)
-                                        hospital_id = payload_json.get('hospital_id') or payload_json.get('hospitalId') or payload_json.get('sub')
-                                except Exception:
-                                    hospital_id = None
-                        if hospital_id:
-                            params['hospital_id'] = hospital_id
-
-                        # location_name is required; prefer stored hospital location or hospital name
-                        location_name = app.storage.user.get('hospital_location_name') or app.storage.user.get('hospital_name') or hospital_name_label.text
-                        if not location_name:
-                            location_name = 'Unknown'
-                        params['location_name'] = location_name
-
-                        headers = {'Authorization': f'Bearer {token}'} if token else {}
+                        print(f"This is the location name:{location_name}")
 
                         try:
-                            resp = await run.io_bound(lambda: requests.get(f"{base_url}/donors/search", params=params, headers=headers))
-                        except Exception as ex:
-                            ui.notify(f'Failed to search donors: {ex}', type='negative')
-                            return
-
-                        # handle unauthorized (token expiry) specifically
-                        if resp.status_code == 401:
-                            body = None
-                            try:
-                                body = resp.json()
-                            except Exception:
-                                body = resp.text
-
-                            # detect expired signature message from backend
-                            if body and ('expired' in str(body).lower() or 'signature has expired' in str(body).lower()):
-                                ui.notify('Session expired. Please log in again.', type='warning')
-                                try:
-                                    # clear stored auth info
-                                    app.storage.user.pop('access_token', None)
-                                    app.storage.user.pop('hospital_id', None)
-                                except Exception:
-                                    pass
-                                return ui.navigate.to('/hospital/login')
-
-                            ui.notify(f'Unauthorized: {resp.status_code} - {body}', type='warning')
-                            print('Donor search unauthorized', resp.status_code, body)
-                            return
-
-                        # better error reporting for other non-200 responses (helps diagnose 422)
-                        if resp.status_code != 200:
-                            body = None
-                            try:
-                                body = resp.json()
-                            except Exception:
-                                body = resp.text
-                            ui.notify(f'Failed to search donors: {resp.status_code} - {body}', type='warning')
-                            print('Donor search error', resp.status_code, body)
-                            return
-
-                        try:
-                            j = resp.json()
+                            radius = float(dm_distance.value or 10)
                         except Exception:
-                            j = None
+                            radius = 10
+                        params["radius"] = radius
 
-                        if isinstance(j, dict):
-                            items = j.get('data') or j.get('donors') or []
-                        elif isinstance(j, list):
-                            items = j
-                        else:
-                            items = []
+                        print(f"This is the parameters: {params}")
+
+                        headers = {"Authorization": f"Bearer {token}"} if token else {}
+
+                        try:
+                            resp = await run.io_bound(
+                                lambda: requests.get(f"{base_url}/donors/search", params=params, headers=headers)
+                            )
+                            print(f"Response: {resp.status_code, resp.content}")
+                        except Exception as ex:
+                            ui.notify(f"Failed to search donors: {ex}", type="negative")
+                            return
+
+                        if resp.status_code != 200:
+                            try:
+                                err = resp.json()
+                            except Exception:
+                                err = resp.text
+                            # ui.notify(f"Failed to search donors: {resp.status_code} - {err}", type="warning")
+                            # print("Donor search error", resp.status_code, err)
+                            # return
+
+                        try:
+                            donors = resp.content
+                            print(f"Donors2: {donors}")
+                        except Exception:
+                            donors = []
+
+                        try:
+                            donors_data = json.loads(donors)
+                            donors_list = donors_data.get("donors", [])
+                            message = donors_data.get("message", "")
+                            print(f"Message: {message}")
+                        except json.JSONDecodeError as e:
+                            ui.notify(f"Failed to parse donor data: {e}", type="negative")
+                            return
 
                         donor_table.clear()
-                        for d in items:
-                            full = d.get('full_name') or d.get('name') or f"{d.get('first_name','')} {d.get('last_name','')}".strip()
-                            phone = d.get('phone_number') or d.get('phone') or d.get('contact') or 'N/A'
-                            blood = d.get('blood_type') or d.get('bloodGroup') or 'N/A'
-                            # availability might be boolean or string
-                            if 'availability' in d:
-                                availability = d.get('availability')
-                            elif d.get('is_available') is not None:
-                                availability = 'Available' if d.get('is_available') else 'Unavailable'
-                            else:
-                                availability = d.get('status') or 'Unknown'
 
-                            distance_val = d.get('distance') or d.get('dist')
-                            distance_str = f"{distance_val} km" if distance_val is not None else 'N/A'
+                        for d in donors_list:
+                            print(f"Donor: {d}")
+                            if not isinstance(d, dict):
+                                continue
+
+                            full = d.get("full_name") or "N/A"
+                            phone = d.get("phone_number") or "N/A"
+                            blood = d.get("blood_type") or "N/A"
+                            distance_val = d.get("distance_km")
+                            distance_str = f"{distance_val} km" if distance_val is not None else "N/A"
+                            location = d.get("location_details") or "N/A"
+                            availability = d.get("Availability", "Unknown")
 
                             with donor_table:
-                                with ui.row().classes('grid grid-cols-5 gap-2 py-2 items-center border-b border-gray-100'):
-                                    ui.label(full or 'N/A').classes('text-left text-sm')
-                                    ui.label(blood).classes('text-left text-sm')
-                                    ui.label(distance_str).classes('text-left text-sm')
-                                    ui.label(str(availability)).classes('text-left text-sm')
-                                    ui.label(phone).classes('text-left text-sm')
+                                with ui.row().classes(
+                                    "grid grid-cols-6 gap-4 w-full text-gray-700  mt-3 p-2"
+                                ):
+                                    ui.label(full).classes("text-left text-sm")
+                                    ui.label(blood).classes("text-left text-sm")
+                                    ui.label(location).classes("text-left text-sm")
+                                    ui.label(distance_str).classes("text-left text-sm")
+                                    ui.label(availability).classes("text-left text-sm")
+                                    ui.label(phone).classes("text-left text-sm")
 
-                    # auto-search handlers removed; search is triggered via the Search button
 
-                    # initial load
+                    # Auto load donors on page load
                     ui.timer(0.5, load_donor_matches, once=True)
+
 
         # Map 
         with ui.row().classes("flex flex-col md:flex-row justify-center gap-6 w-full px-4 py-6"):
@@ -309,7 +292,7 @@ def hospital_dashboard_page():
                     ).classes("w-full h-50 rounded-md overflow-hidden")
             
             # Request history 
-            with ui.card().classes("w-full md:w-[65%] p-6 bg-white shadow-md rounded-md border border-red-100"):
+            with ui.card().props("id=request").classes("w-full md:w-[65%] p-6 bg-white shadow-md rounded-md border border-red-100"):
                 ui.label("Request History").classes("text-xl font-bold text-gray-700 mb-2")
 
                 # Header row
@@ -487,7 +470,8 @@ def hospital_dashboard_page():
                                                                             dlg.close()
                                                                             await load_requests()
                                                                         elif resp.status_code == 401:
-                                                                            ui.notify('Unauthorized. Please log in again.', type='warning')
+                                                                            ui.notify('Session expired. Redirecting to login...', type='warning')
+                                                                            ui.open('/hospital/login')
                                                                         else:
                                                                             # try to surface backend message
                                                                             try:
@@ -532,7 +516,8 @@ def hospital_dashboard_page():
                                                                             dlg.close()
                                                                             await load_requests()
                                                                         elif resp.status_code == 401:
-                                                                            ui.notify('Unauthorized. Please log in again.', type='warning')
+                                                                            ui.notify('Session expired. Redirecting to login...', type='warning')
+                                                                            ui.open('/hospital/login')
                                                                         else:
                                                                             try:
                                                                                 msg = resp.json()
@@ -568,25 +553,41 @@ def hospital_dashboard_page():
                                                                         ui.notify(f'Network error: {ex}', type='negative')
                                                                         get_btn.props(remove='disable loading')
                                                                         return
-
                                                                     get_btn.props(remove='disable loading')
                                                                     if resp.status_code == 200:
-                                                                        j = resp.json()
-                                                                        if isinstance(j, dict):
-                                                                            items = j.get('data', [])
-                                                                        elif isinstance(j, list):
-                                                                            items = j
-                                                                        else:
-                                                                            items = []
-                                                                        list_container.clear()
-                                                                        for it in items:
+                                                                        j = json.loads(resp.content.decode('utf-8'))
+                                                                        print(f"j: {j}")
+                                                                        
+                                                                        for it in j:
+                                                                            print(f"it: {it}")
                                                                             with list_container:
                                                                                 with ui.row().classes('items-center justify-between'):
-                                                                                    ui.label(f"Responder: {it.get('responder_name', it.get('name','N/A'))} | Message: {it.get('message','')}").classes('text-sm')
-                                                                                    async def _confirm_resp(_ev=None, response_item=it):
+                                                                                    ui.label(f"Responder ID: {it.get('request_id', 'N/A')} | Token : {it.get('confirmation_token','')}").classes('text-sm')
+                                                                                    async def _confirm_resp(_ev=None):
                                                                                         confirm_btn.props(add='disable loading')
+                                                                                        confirmation_token = str(token_input.value).strip() if token_input.value else None
+                                                                                        donation_date = str(date_input.value).strip() if date_input.value else None
+                                                                                        recipient_info = recipient_input.value.strip() if recipient_input.value else None
+
+                                                                                        # Debugging payload
+                                                                                        print(f"DEBUG: Payload={{'confirmation_token': {confirmation_token}, 'donation_date': {donation_date}, 'recipient_info': {recipient_info}}}")
+
+                                                                                        # Validate payload
+                                                                                        if not confirmation_token or not donation_date:
+                                                                                            ui.notify('Confirmation token and donation date are required.', type='warning')
+                                                                                            confirm_btn.props(remove='disable loading')
+                                                                                            return
+
                                                                                         def _post():
-                                                                                            return requests.post(f"{base_url}/responses/{response_item.get('id')}/confirm-donation", headers={'Authorization': f'Bearer {token}'})
+                                                                                            return requests.post(
+                                                                                                f"{base_url}/responses/confirm-donation",
+                                                                                                headers={'Authorization': f'Bearer {token}'},
+                                                                                                json={
+                                                                                                    'confirmation_token': confirmation_token,
+                                                                                                    'donation_date': donation_date,
+                                                                                                    'recipient_info': recipient_info
+                                                                                                }
+                                                                                            )
                                                                                         try:
                                                                                             rresp = await run.io_bound(_post)
                                                                                         except Exception as ex:
@@ -595,8 +596,12 @@ def hospital_dashboard_page():
                                                                                             return
 
                                                                                         confirm_btn.props(remove='disable loading')
-                                                                                        if rresp.status_code in (200,201):
-                                                                                            ui.notify('Donation confirmed', color='positive')
+                                                                                        if rresp.status_code in (200, 201):
+                                                                                            response_data = rresp.json()
+                                                                                            message = response_data.get('message', 'Donation confirmed successfully.')
+                                                                                            confirmation_token = response_data.get('confirmation_token_if_committed', 'N/A')
+                                                                                            ui.notify(f"{message}\nConfirmation Token: {confirmation_token}", color='positive')
+
                                                                                             await _load_responses()
                                                                                             await load_requests()
                                                                                         elif rresp.status_code == 401:
@@ -606,9 +611,16 @@ def hospital_dashboard_page():
                                                                                                 msg = rresp.json()
                                                                                             except Exception:
                                                                                                 msg = rresp.text
+                                                                                                print(f"DEBUG: Failed to confirm response. Status: {rresp.status_code}, Message: {msg}")
                                                                                             ui.notify(f'Failed to confirm: {rresp.status_code} {msg}', type='warning')
 
-                                                                                    confirm_btn = ui.button('Confirm', on_click=_confirm_resp).props('flat dense').classes('bg-green-600 text-white')
+                                                                                    with list_container:
+                                                                                        with ui.row().classes('items-center justify-between'):
+                                                                                            ui.label(f"Responder: {it.get('recipient_info', it.get('name','N/A'))} | Message: {it.get('message','')}").classes('text-sm')
+                                                                                            token_input = ui.input(label='Confirmation Token').classes('w-full')
+                                                                                            date_input = ui.input(label='Donation Date').props('type=date').classes('w-full')
+                                                                                            recipient_input = ui.input(label='Recipient Info (Optional)').classes('w-full')
+                                                                                            confirm_btn = ui.button('Confirm', on_click=_confirm_resp).props('flat dense').classes('bg-green-600 text-white')
                                                                     else:
                                                                         ui.notify(f'Failed to load responses: {resp.status_code}', type='warning')
 
@@ -633,17 +645,17 @@ def hospital_dashboard_page():
                                                                     return requests.get(f"{base_url}/requests/{r.get('id')}/responses", headers={'Authorization': f'Bearer {token}'})
 
                                                                 resp = await run.io_bound(_get_sync)
+                                                                print(f"Donor_responses: {resp.content}")
                                                                 if resp.status_code == 200:
-                                                                    j = resp.json()
-                                                                    if isinstance(j, dict):
-                                                                        items = j.get('data', [])
-                                                                    elif isinstance(j, list):
-                                                                        items = j
-                                                                    else:
-                                                                        items = []
+                                                                    items = json.loads(resp.content.decode('utf-8'))  # Decode and parse JSON content
+                                                                    print(f"items: {items}")
                                                                     for it in items:
+                                                                        print(f"it: {it}")
                                                                         with list_container:
-                                                                            ui.label(f"Responder: {it.get('responder_name', it.get('name','N/A'))} | Message: {it.get('message','')}").classes('text-sm')
+                                                                            if not isinstance(it, dict):
+                                                                                ui.label(f"Invalid responder data: {it}").classes('text-sm')
+                                                                                continue
+                                                                            ui.label(f"Responder ID: {it.get('request_id', 'N/A')} | Token: {it.get('confirmation_token', 'N/A')}").classes('text-sm')
                                                                 else:
                                                                     ui.notify(f'Failed to load responses: {resp.status_code}', type='warning')
 
@@ -670,7 +682,7 @@ def hospital_dashboard_page():
 
                     # try /hospitals/me first
                     def _get_me():
-                        return requests.get(f"{base_url}/hospitals/me", headers={"Authorization": f"Bearer {token}"})
+                        return requests.get(f"{base_url}/hospitals/me/profile", headers={"Authorization": f"Bearer {token}"})
 
                     try:
                         resp = await run.io_bound(_get_me)
@@ -752,3 +764,21 @@ def hospital_dashboard_page():
                 ui.link("About").classes("no-underline text-gray-700 transition")
                 ui.link("Contact").classes("no-underline hover:text-white text-gray-700 transition")
                 ui.link("Privacy Policy").classes("no-underline text-gray-700 transition")
+
+        # Profile modal
+        profile_modal = ui.dialog()
+        with profile_modal:
+            with ui.menu().props("anchor=top-left"):
+                ui.menu_item("View Profile")
+                ui.menu_item("Settings")
+                ui.menu_item("Help")
+                ui.menu_item("Logout", on_click=lambda: logout_modal.open())
+        # Logout confirmation modal
+        logout_modal = ui.dialog()
+        with logout_modal:
+            with ui.card().classes("p-4 w-[90vw] md:w-[25vw]"):
+                ui.label("Confirm Logout").classes("text-lg font-semibold mb-3")
+                ui.label("Are you sure you want to logout?").classes("text-sm text-gray-700 mb-3")
+                with ui.row().classes("justify-end gap-2"):
+                    ui.button("Cancel", on_click=lambda: logout_modal.close()).props("flat dense")
+                    ui.button("Logout", on_click=lambda: ui.navigate.to("/")).props("flat dense").classes("bg-red-600 text-white")

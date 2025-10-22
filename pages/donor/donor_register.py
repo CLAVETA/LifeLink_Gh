@@ -52,29 +52,29 @@ def donor_registration_page():
                 with ui.element("div").classes("grid grid-cols-1 md:grid-cols-1 gap-4 w-full"):
                     with ui.element("div").classes("flex flex-col w-full"):
                         ui.label("Full Name").classes("text-sm text-left")
-                        fullname = ui.input().props("flat outlined dense").classes("rounded-sm bg-white text-xs")
+                        fullname = ui.input().props("flat outlined dense color=red-100").classes("rounded-sm bg-white text-xs")
 
                 with ui.element("div").classes("grid grid-cols-1 md:grid-cols-2 gap-4 w-full"):
                     with ui.element("div").classes("flex flex-col w-full text-gray-700"):
                         ui.label("Email Address").classes("text-sm text-left")
-                        email = ui.input().props("flat outlined dense").classes("bg-white text-xs")
+                        email = ui.input().props("flat outlined dense color=red-100").classes("bg-white text-xs")
                     
                     with ui.element("div").classes("flex flex-col w-full text-gray-700"):
                         ui.label("Password").classes("text-sm text-left")
                         password = ui.input(placeholder="Your Password",password=True,
-                        password_toggle_button=True,).props("flat outlined dense").classes("bg-white text-xs")
+                        password_toggle_button=True,).props("flat outlined dense color=red-100").classes("bg-white text-xs")
 
                 with ui.element("div").classes("grid grid-cols-1 md:grid-cols-2 gap-4 w-full py-2"):
                     with ui.element("div").classes("flex flex-col w-full"):
                         ui.label("Phone Number").classes("text-sm text-left")
-                        phone_number = ui.input().props("flat outlined dense").classes("bg-white text-xs")
+                        phone_number = ui.input().props("flat outlined dense color=red-100").classes("bg-white text-xs")
 
                     with ui.element("div").classes("flex flex-col w-full"):
                         ui.label("Blood Type").classes("text-sm text-left")
                         blood_type = ui.select(
-                            ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"],
-                            value="A+",
-                        ).props("outlined dense").classes("bg-white text-xs")
+                            ["Blood Group","A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"],
+                            value="Blood Group",
+                        ).props("outlined dense color=red-100").classes("bg-white text-xs")
 
                 with ui.element("div").classes("grid grid-cols-1 md:grid-cols-2 gap-4 w-full py-2"):
                     with ui.element("div").classes("flex flex-col w-full"):
