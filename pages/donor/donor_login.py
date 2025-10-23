@@ -22,7 +22,7 @@ async def _login(data):
         json_data = response.json()
         # app.storage.user["access_token"] = json_data["access_token"]
         ui.notify("Login successful!", color="positive")
-        return ui.navigate.to("/donor/dashboard")
+        return ui.navigate.to("/donor/donation_request")
 
 
 @ui.page("/donor/login")
