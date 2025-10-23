@@ -48,26 +48,20 @@ RESOURCES = {
 # Search Card Section
 # -------------------------
 def search_card(filtered_resources_container):
-    selected_topic = ui.select(
-        {
-            "blood": "Blood Donation",
-            "sickle cell": "Understanding Sickle Cell",
-            "crisis": "Sickle Cell Management",
-        },
-        with_input=True,
-        value=None,
-        on_change=lambda e: update_resources_view(e.value, filtered_resources_container),
-    ).props("placeholder=Choose topic dense").classes(
-        "w-full bg-white text-black rounded-md h-10"
-    )
-
-    with ui.row().classes("bg-red-500 w-full text-white rounded-xl p-4 shadow-xl gap-4 items-end flex-wrap justify-between"):
-        with ui.column().classes("flex-1"):
-            ui.label("Search for topics").classes("text-xs text-white mb-1")
-            selected_topic
-        ui.button(icon="search", on_click=lambda: ui.notify("Select a topic to view resources")).classes(
-            "h-10 w-10 rounded-md flex items-center justify-center text-white bg-purple-700"
-        )
+    with ui.element("div").classes("flex items-center justify-center w-full px-4 -mt-10 relative z-10"):
+        with ui.row().classes("bg-red-500 w-full text-white rounded-xl p-4 shadow-xl gap-4 items-end flex-wrap"):                 
+            selected_topic = ui.select(
+                {
+                    "blood": "Blood Donation",
+                    "sickle cell": "Understanding Sickle Cell",
+                    "crisis": "Sickle Cell Management",
+                },
+                with_input=True,
+                value=None,
+                on_change=lambda e: update_resources_view(e.value, filtered_resources_container),
+            ).props("placeholder=Choose topic dense").classes(
+                "w-full bg-white text-black rounded-md h-10"
+            )
 
 
 # -------------------------
@@ -169,10 +163,10 @@ def education_page():
                 ui.label(
                     "Your comprehensive centre for understanding blood donation and sickle cell disease."
                 ).classes("text-base md:text-xl leading-relaxed")
-
-        # Search Filter
-        filtered_resources_container = ui.column().classes("w-full mt-10 px-10 md:px-20")
-        search_card(filtered_resources_container)
+        # Search Filter        
+        with ui.column().classes("flex items-center justify-center w-full"):
+            filtered_resources_container = ui.column().classes("w-full mt-10 px-10 md:px-20")
+            search_card(filtered_resources_container)        
 
         # Default Resources Section (initially empty)
         ui.label("Educational Resources").classes(
