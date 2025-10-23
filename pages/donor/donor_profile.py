@@ -1,121 +1,133 @@
-from nicegui import ui, app
-from utils.api import base_url
-import requests
+# from nicegui import ui
+# import requests
+# from utils.api import base_url
+# import json
 
-# components
-from components.donor_sidebar import donor_sidebar
-from components.donor_header import donor_header
+# PROFILE_ENDPOINT = f"{base_url}/donors/me/profile"
 
-# # Profile Section
-# with ui.card().classes("p-6 shadow-lg rounded-xl bg-white mt-4"):
-#     ui.label("Profile Info").classes("text-xl font-semibold text-gray-800 mb-4")
-#     ui.label(f"Blood Group: {donor_profile.get('blood_group', '-')}")
-#     ui.label(f"Email: {donor_profile.get('email', '-')}")
 
-@ui.page("/donor/profile")
-def donor_profile_page():
-    # Setup for responsive design and removing default NiceGUI margins
-    ui.add_head_html('<script src="https://kit.fontawesome.com/6704ceb212.js" crossorigin="anonymous"></script>')
-    ui.query(".nicegui-content").classes("m-0 p-0 gap-0")
+# def donor_sidebar(auth_token: str = None):
+#     # Initial donor info with default values
+#     donor_info = {
+#         "name": "Name",
+#         "blood_type": "None",
+#         "donor_id": "None",
+#         "location": "N/A",
+#         "profile_picture_url": "https://placehold.co/100x100/A00000/FFFFFF?text=JD",
+#         "is_available": False,
+#     }
 
-    # with ui.element("main").classes("min-h-screen w-full bg-gray-50 p-4 sm:p-8"):
-    with ui.header(elevated=True).classes('bg-white dark:bg-gray-800 text-black dark:text-white'):
-        donor_header()       
-    with ui.left_drawer(bordered=True).classes('bg-gray-100 dark:bg-gray-900'):
-        donor_sidebar()    
+#     # Fetch donor profile from backend if token exists
+#     if auth_token:
+#         try:
+#             headers = {"Authorization": f"Bearer {auth_token}"}
+#             response = requests.get(PROFILE_ENDPOINT, headers=headers, timeout=10)
+#             if response.status_code == 200:
+#                 data = response.json()
+#                 donor_info["name"] = data.get("full_name", "Donor").upper()
+#                 donor_info["blood_type"] = data.get("blood_type", "None")
+#                 donor_info["location"] = data.get("location", "N/A")
+#                 donor_info["donor_id"] = str(data.get("donor_id", "0000"))
+#             else:
+#                 ui.notify(f"Failed to load donor profile ({response.status_code})", color="red")
+#         except Exception as e:
+#             ui.notify(f"Error fetching donor data: {e}", color="red")
+#     else:
+#         ui.notify("No authentication token found. Please log in.", color="red")
 
-    # with ui.element("main").classes("min-h-screen w-full bg-gray-50 p-4 sm:p-8"):
-    #     # Main Portal Container (Sidebar + Content)
-    #     with ui.row().classes("w-full max-w-screen-xl mx-auto flex flex-col lg:flex-row gap-6"):
-            
+#     # Refreshable label for availability status
+#     @ui.refreshable
+#     def availability_status_text(is_available):
+#         status_text = "Available" if is_available else "Unavailable"
+#         ui.label(status_text).classes("text-lg font-medium text-gray-700")
 
-            # Right Column (Profile Content)
-    with ui.column().classes("flex-grow w-full"):
-                
-                ui.label("My Profile").classes("text-3xl font-bold text-gray-800 mb-2 mt-2 p-6 ml-4")
-                
-                # Profile Header (Image and Name)
-                with ui.column().classes("w-full items-left bg-white p-6 shadow-lg rounded-xl mb-6"):
-                    # Placeholder for profile image
-                    ui.image("/assets/logo.png").classes("w-20 h-20")
-                    ui.html('<div class="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 text-3xl font-bold">JD</div>', sanitize=False).classes("flex-shrink-0")
-                    
-                    with ui.column().classes("ml-4 gap-0"):
-                        ui.label("Jane Doe").classes("text-xl font-semibold text-gray-800")
-                        ui.label("O+ Blood Type | Registered Donor").classes("text-sm text-red-600")
-                    
-                    # Action Button (top right)
-                    ui.button("Edit Profile", icon="edit").props("flat no-caps").classes("ml-auto text-red-600 hover:bg-red-100")
-                        
-                # 1. Personal Information Card
-                with ui.card().classes("w-full p-6 shadow-lg rounded-xl bg-white mb-6"):
-                    ui.label("Personal Information").classes("text-xl font-semibold text-gray-800 mb-4 border-b pb-2")
-                    
-                    # Grid for input fields
-                    with ui.row().classes("grid grid-cols-1 md:grid-cols-2 gap-4 w-full mt-4"):
-                        # Name
-                        with ui.column().classes("w-full"):
-                            ui.label("Full Name").classes("text-xs font-medium text-gray-500")
-                            ui.input(value="Jane Doe").props("outlined dense readonly").classes("w-full bg-gray-50")
-                        # Email
-                        with ui.column().classes("w-full"):
-                            ui.label("Email Address").classes("text-xs font-medium text-gray-500")
-                            ui.input(value="jane.doe@example.com").props("outlined dense readonly").classes("w-full bg-gray-50")
-                        # Phone
-                        with ui.column().classes("w-full"):
-                            ui.label("Phone Number").classes("text-xs font-medium text-gray-500")
-                            ui.input(value="+233 24 000 0000").props("outlined dense readonly").classes("w-full bg-gray-50")
-                        # Blood Type
-                        with ui.column().classes("w-full"):
-                            ui.label("Blood Type").classes("text-xs font-medium text-gray-500")
-                            ui.input(value="O Positive (O+)").props("outlined dense readonly").classes("w-full bg-red-50 text-red-600 font-bold")
-                            
-                # 2. Address Information Card
-                with ui.card().classes("w-full p-6 shadow-lg rounded-xl bg-white mb-6"):
-                    ui.label("Address Information").classes("text-xl font-semibold text-gray-800 mb-4 border-b pb-2")
-                    
-                    with ui.column().classes("w-full mt-4 space-y-3"):
-                        # Street Address
-                        ui.label("Street Address").classes("text-xs font-medium text-gray-500")
-                        ui.input(value="456 Donor Lane").props("outlined dense readonly").classes("w-full bg-gray-50")
-                        # City, Region, Postcode (3-column layout)
-                        with ui.row().classes("grid grid-cols-1 sm:grid-cols-3 gap-4 w-full"):
-                            with ui.column().classes("w-full"):
-                                ui.label("City").classes("text-xs font-medium text-gray-500")
-                                ui.input(value="Accra").props("outlined dense readonly").classes("w-full bg-gray-50")
-                            with ui.column().classes("w-full"):
-                                ui.label("Region").classes("text-xs font-medium text-gray-500")
-                                ui.input(value="Greater Accra").props("outlined dense readonly").classes("w-full bg-gray-50")
-                            with ui.column().classes("w-full"):
-                                ui.label("Postcode").classes("text-xs font-medium text-gray-500")
-                                ui.input(value="00233").props("outlined dense readonly").classes("w-full bg-gray-50")
-                                
-                # 3. Medical History & Settings Cards (Side-by-side)
-                with ui.row().classes("grid grid-cols-1 md:grid-cols-2 gap-6 w-full"):
-                    
-                    # Medical History Card
-                    with ui.card().classes("w-full p-6 shadow-lg rounded-xl bg-white"):
-                        ui.label("Medical History").classes("text-xl font-semibold text-gray-800 mb-4")
-                        ui.label("Keep your medical records updated to ensure donation eligibility.").classes("text-sm text-gray-500 mb-4")
-                        ui.button("View / Update Medical History", icon="history_edu").props("no-caps").classes("w-full bg-red-600 text-white hover:bg-red-500")
+#     # Toggle handler for availability status
+#     def handle_availability_toggle(e):
+#         donor_info["is_available"] = e.value
+#         availability_status_text.refresh(donor_info["is_available"])
+#         new_status = "Available" if e.value else "Unavailable"
+#         ui.notify(f"Updating availability to: {new_status}. API call pending...", color="info")
 
-                    # Notification Settings Card
-                    with ui.card().classes("w-full p-6 shadow-lg rounded-xl bg-white"):
-                        ui.label("Notification Settings").classes("text-xl font-semibold text-gray-800 mb-4")
-                        
-                        with ui.column().classes("w-full space-y-4"):
-                            # Email Notifications
-                            with ui.row().classes("items-center justify-between w-full"):
-                                ui.label("Email Notifications").classes("font-medium text-gray-800")
-                                ui.switch().props("color=red")
-                            ui.separator()
-                            # SMS Alerts
-                            with ui.row().classes("items-center justify-between w-full"):
-                                ui.label("SMS Alerts for Urgent Need").classes("font-medium text-gray-800")
-                                ui.switch(value=True).props("color=red")
-                            ui.separator()    
-                        
-                            # App Status Updates
-                            with ui.row().classes("items-center justify-between w-full"):
-                                ui.label("App Status Updates").classes("font-medium text-gray-800")
-                                ui.switch(value=True).props("color=red")
+#     # Donor card popup
+#     def show_donor_card():
+#         with ui.dialog() as dialog, ui.card().classes('p-6 w-full max-w-md rounded-2xl shadow-2xl bg-white'):
+#             with ui.column().classes('items-center space-y-4'):
+#                 ui.label("My Donor Card").classes("text-2xl font-bold text-red-700 self-start")
+
+#                 with ui.card().classes('w-90 items-center border border-gray-300 rounded-xl p-4 shadow-md bg-white'):
+#                     ui.image('assets/donor_profile.png').classes("w-20 h-20 rounded-full object-cover border-2 border-red-600")
+#                     ui.label("Life Link GH").classes("text-lg font-semibold text-gray-800 mb-2")
+#                     ui.separator()
+#                     ui.label("NAME").classes("text-xs text-gray-500 mt-2")
+#                     ui.label(donor_info["name"]).classes("text-xl font-bold text-gray-900")
+
+#                     ui.label("BLOOD TYPE").classes("text-xs text-gray-500 mt-3")
+#                     ui.label(donor_info["blood_type"]).classes("text-2xl font-extrabold text-red-600")
+
+#                     ui.label("LOCATION").classes("text-xs text-gray-500 mt-3")
+#                     ui.label(donor_info["location"]).classes("text-lg font-semibold text-red-500")
+
+#                     ui.separator().classes("my-3")
+
+#                     with ui.row().classes("justify-between items-center w-full"):
+#                         ui.label("Valued Blood Donor").classes("text-sm text-gray-600 italic")
+#                         with ui.column().classes("items-center"):
+#                             ui.icon("bloodtype").classes("text-red-600 text-4xl")
+#                             ui.label(f"ID: {donor_info['donor_id']}").classes("text-xs font-semibold tracking-wide text-gray-600")
+
+#                 ui.button("Print Card", icon="print") \
+#                     .classes("w-full bg-green-500 text-white hover:bg-green-600 mt-3 rounded-lg") \
+#                     .on_click(lambda: ui.run_javascript("window.print();"))
+
+#                 ui.button("Close", icon="close") \
+#                     .props("outline no-caps") \
+#                     .classes("w-full text-gray-600 hover:bg-gray-100") \
+#                     .on_click(dialog.close)
+
+#         dialog.open()
+
+#     # Sidebar layout
+#     with ui.column().classes("w-full bg-white shadow-xl rounded-xl p-4 space-y-4"):
+#         with ui.card().classes("w-full p-6 shadow-lg rounded-xl bg-white"):
+#             ui.label("My Information").classes("text-xl font-semibold text-gray-800 mb-4")
+
+#             # Blood Group Section
+#             with ui.row().classes("w-full items-center space-x-4 mb-4"):
+#                 ui.icon("water_drop").classes("text-4xl text-red-600")
+#                 with ui.column().classes("gap-0"):
+#                     ui.label("Blood Group").classes("text-sm text-gray-500")
+#                     ui.label(donor_info["blood_type"]).classes("text-3xl font-bold text-red-600")
+
+#             ui.separator().classes("my-4")
+
+#             # Quick Actions
+#             with ui.column().classes("w-full space-y-3"):
+#                 ui.button("Edit Profile", icon="edit") \
+#                     .props("outline no-caps") \
+#                     .classes("w-full bg-red-200 text-red border-gray-300 hover:bg-red-100") \
+#                     .on("click", lambda: ui.navigate.to("/donor/profile"))
+
+#         # Availability Section
+#         ui.separator().classes("my-4")
+#         with ui.card().classes("w-full p-4 rounded-xl shadow-lg bg-red-50 ring-2 ring-red-100"):
+#             ui.label("Update Availability").classes("text-base font-semibold text-red-700 mb-2")
+
+#             with ui.row().classes("w-full items-center justify-between"):
+#                 # Left: Icon and status
+#                 with ui.row().classes("items-center space-x-4"):
+#                     with ui.card().classes("p-3 bg-white rounded-lg shadow-sm"):
+#                         ui.icon("favorite", size="2xl").classes("text-red-600")
+#                     with ui.column().classes("gap-0"):
+#                         ui.label("Status").classes("text-sm text-gray-500")
+#                         availability_status_text(donor_info["is_available"])
+
+#                 # Right: The Switch
+#                 ui.switch(value=donor_info["is_available"], on_change=handle_availability_toggle) \
+#                     .props('color="red" size="lg"')
+
+#         # Donor Card Button
+#         with ui.column().classes("w-full space-y-3 mt-4"):
+#             ui.button("View My Donor Card", icon="medical_services") \
+#                 .props("flat no-caps") \
+#                 .classes("w-full text-gray bg-red-100 hover:bg-red-200") \
+#                 .on_click(show_donor_card)

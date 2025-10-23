@@ -1,24 +1,96 @@
 from nicegui import ui, app
+import httpx
+import asyncio
 
 # components
 from components.navbar import show_navbar
-# from components.footer import show_footer
-
 
 app.add_static_files("/assets", "assets")
 
+# -------------------------
+# Search Card Section
+# -------------------------
 def search_card():
     with ui.element("div").classes("flex items-center justify-center w-full px-4 -mt-10 relative z-10"):
         with ui.row().classes("bg-red-500 w-full text-white rounded-xl p-4 shadow-xl gap-4 items-end flex-wrap"):
             with ui.column().classes("w-full flex-1"):
                 ui.label("Search for topics").classes("text-xs text-white mb-1")
-                ui.select({"blood": "Blood Donation", "sickle cell": "Understanding sickle cell disease", "crisis": "Sickle cell management"}, with_input=True, value=None)\
-                    .props("placeholder=Choose topic dense")\
-                    .classes("w-full bg-white text-black rounded-md h-10")
-            ui.button(icon="search", on_click=lambda: ui.notify("Searching topics..."))\
-                .classes("h-10 w-10 rounded-md flex items-center justify-center text-white bg-red")\
-                .style("background:#7C4DFF;")                
+                ui.select(
+                    {"blood": "Blood Donation", "sickle cell": "Understanding Sickle Cell", "crisis": "Sickle Cell Management"},
+                    with_input=True,
+                    value=None
+                ).props("placeholder=Choose topic dense").classes("w-full bg-white text-black rounded-md h-10")
+            ui.button(icon="search", on_click=lambda: ui.notify("Searching topics...")) \
+                .classes("h-10 w-10 rounded-md flex items-center justify-center text-white bg-purple-700")
 
+# -------------------------
+# Create Resource Modal
+# -------------------------
+async def create_resource(title, description, link):
+    url = "https://lifelinkgh-api.onrender.com/resources"
+    payload = {"title": title.value, "description": description.value, "link": link.value}
+
+    try:
+        async with httpx.AsyncClient(timeout=15) as client:
+            resp = await client.post(url, json=payload)
+            if resp.status_code == 200 or resp.status_code == 201:
+                ui.notify("✅ Resource added successfully!", color="green")
+                title.value, description.value, link.value = "", "", ""
+            else:
+                ui.notify(f"⚠️ Failed to add resource: {resp.text}", color="red")
+    except Exception as e:
+        ui.notify(f"Error: {str(e)}", color="red")
+
+def show_add_resource_modal():
+    with ui.dialog() as dialog, ui.card().classes("p-6 w-full max-w-lg"):
+        ui.label("📘 Add Educational Resource").classes("text-2xl font-bold mb-4 text-center")
+        title = ui.input(label="Title", placeholder="Enter resource title").classes("w-full mb-3")
+        description = ui.textarea(label="Description", placeholder="Brief summary...").classes("w-full mb-3")
+        link = ui.input(label="Resource Link (optional)", placeholder="https://...").classes("w-full mb-3")
+        with ui.row().classes("justify-end mt-4 gap-3"):
+            ui.button("Cancel", on_click=dialog.close).classes("bg-gray-400 text-white")
+            ui.button("Submit", on_click=lambda: asyncio.create_task(create_resource(title, description, link))).classes("bg-red text-white")
+    dialog.open()
+
+# -------------------------
+# Chatbot (Lifelink Geni)
+# -------------------------
+async def send_ai_message(prompt, chat_output):
+    url = "https://lifelinkgh-api.onrender.com/genai/generate_text"
+    payload = {"prompt": prompt}
+    chat_output.value += f"🧑 You: {prompt}\n"
+    try:
+        async with httpx.AsyncClient(timeout=20) as client:
+            response = await client.post(url, json=payload)
+            if response.status_code == 200:
+                data = response.json()
+                ai_reply = data.get("text", "No response.")
+                chat_output.value += f"🤖 Geni: {ai_reply}\n\n"
+            else:
+                chat_output.value += f"⚠️ Error: {response.text}\n\n"
+    except Exception as e:
+        chat_output.value += f"❌ Connection error: {str(e)}\n\n"
+
+def lifelink_geni_chatbot():
+    with ui.dialog().classes("p-0") as chatbot, ui.card().classes("p-4 w-[350px] h-[480px] flex flex-col justify-between bg-white"):
+        ui.label("💬 Lifelink Geni").classes("text-xl font-bold text-center mb-2 text-red-600")
+
+        # FIXED: use props("readonly") instead of readonly=True
+        chat_output = ui.textarea().props("readonly").classes("flex-1 mb-3 text-sm bg-gray-100 rounded-lg")
+
+        user_input = ui.input(placeholder="Looking for something? Ask Geni...").classes("w-full mb-3")
+        ui.button(
+            "Send",
+            on_click=lambda: asyncio.create_task(send_ai_message(user_input.value, chat_output))
+        ).classes("bg-red text-white w-full")
+
+    # Floating chatbot button
+    ui.button("🤖 Chat with LifeLink Geni", on_click=chatbot.open) \
+        .classes("fixed bottom-6 right-6 bg-red text-white rounded-full shadow-lg px-5 py-3 hover:bg-red-700")
+
+# -------------------------
+# Main Page
+# -------------------------
 @ui.page("/user_education")
 def education_page():
     # Setup for responsive design and removing default NiceGUI margins
@@ -92,13 +164,18 @@ def education_page():
                             
                         ui.button("Get Comprehensive Guide", on_click=lambda: ui.navigate.to('/sicklecell_education')).props("no-caps").classes("mt-6 w-full bg-red text-white rounded-md px-4 py-2 hover:bg-red-500 transition")
 
-            ui.button("Load more resources", on_click=lambda: ui.notify("Loading more topics...")).props("no-caps").classes("mt-6 w-full bg-red text-white rounded-md px-4 py-2 hover:bg-gray-500 transition")        
+            # Add More Button
+            ui.button("Add more resources", on_click=show_add_resource_modal) \
+                .classes("mt-10 w-full bg-red text-white rounded-md px-4 py-2 hover:bg-red-600 transition")
 
+        # Footer
+        with ui.row().classes("flex flex-col md:flex-row items-center justify-between px-7 w-full bg-gray-50 py-5 text-sm mt-auto text-gray-500"):
+            ui.image("/assets/logo.png").classes("w-24 h-20")
+            ui.label("© 2025 LifeLink. All rights reserved.").classes("mb-3 md:mb-0 text-xl")
+            with ui.row().classes("gap-3"):
+                ui.link("About", "/about").classes("no-underline text-gray-700 hover:text-red text-xl")
+                ui.link("Contact", "/about#contact").classes("no-underline hover:text-red text-gray-700 text-xl")
+                ui.link("Privacy Policy").classes("no-underline text-gray-700 hover:text-red text-xl")
 
-        # 4. Footer (Consistent with the style used in the other pages)
-        with ui.row().classes("flex flex-col md:flex-row items-center justify-between px-7 w-full bg-gray-50 py-5 text-sm mt-auto text-gray-500 border-t border-red-100"):
-            ui.label("© 2025 LifeLink. All rights reserved.").classes("mb-3 md:mb-0")
-            with ui.row().classes("gap-6"):
-                ui.html('<i class="fa-brands fa-square-linkedin text-xl hover:text-red-600 transition"></i>', sanitize=False)
-                ui.html('<i class="fa-brands fa-instagram text-xl hover:text-red-600 transition"></i>', sanitize=False)
-                ui.html('<i class="fa-brands fa-facebook text-xl hover:text-red-600 transition"></i>', sanitize=False)
+    # Floating chatbot (always on top)
+    lifelink_geni_chatbot()
