@@ -169,9 +169,6 @@ def education_page():
             search_card(filtered_resources_container)        
 
         # Default Resources Section (initially empty)
-        ui.label("Educational Resources").classes(
-            "text-2xl md:text-4xl font-bold text-gray-800 my-8 text-center w-full"
-        )
         with filtered_resources_container:
             ui.label("Select a category to view related resources.").classes(
                 "text-gray-500 italic"
