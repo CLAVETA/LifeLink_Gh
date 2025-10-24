@@ -14,7 +14,7 @@ def donor_header():
                 ui.link("Contact","/about#contact").classes("no-underline text-gray-700 hover:text-red transition")
                 ui.link("FAQs", "/").classes("no-underline text-gray-700 hover:text-red transition")
             ui.space()
-            ui.button("Donate Now", on_click=lambda: ui.navigate.to("/donor/dashboard")).props("no-caps flat dense").classes("bg-red-600 text-white hover:bg-red-500 rounded-md px-4")
+            ui.button("Respond to Requests", on_click=lambda: ui.navigate.to("/donor/donation_request")).props("no-caps flat dense").classes("bg-red-600 text-white hover:bg-red-500 rounded-md px-4")
             with ui.button(icon='person', color='primary').props('flat round'):
                 with ui.menu():
                     ui.menu_item('Dashboard', on_click=lambda: ui.navigate.to("/donor/dashboard")).props('icon=dashboard')
