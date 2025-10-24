@@ -64,7 +64,7 @@ def hospital_dashboard_page():
                 ui.link("Requests", "/hospital/dashboard#request").classes(
                     "no-underline text-gray-700 hover:text-red-500 transition"
                 )
-                ui.link("Education", "/education").classes(
+                ui.link("Education", "/blooddonation_education").classes(
                     "no-underline text-gray-700 hover:text-red-500 transition"
                 )
             with ui.row().classes("gap-4 items-center"):
