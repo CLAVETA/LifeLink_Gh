@@ -72,7 +72,7 @@ def hospital_dashboard_page():
                 notification_count = ui.label("0").classes(
                     "text-sm text-red-500 hidden"
                 )
-                notification_bell = ui.icon("notifications").classes(
+                ui.icon("notifications").classes(
                     "text-gray-700 text-2xl cursor-pointer"
                 )
 
