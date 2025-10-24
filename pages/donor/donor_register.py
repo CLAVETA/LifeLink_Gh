@@ -36,7 +36,7 @@ def donor_registration_page():
                 ui.link("LifeLink GH","/").classes("no-underline text-xl font-bold text-gray-700")
             with ui.row().classes("gap-6 mt-3 md:mt-0"):
                 ui.link("About","/about").classes("no-underline text-gray-700 hover:text-red-500 transition")
-                ui.link("Education","/education").classes("no-underline text-gray-700 hover:text-red-500 transition")
+                ui.link("Education","/blooddonation_education").classes("no-underline text-gray-700 hover:text-red-500 transition")
                 ui.link("Contact","/about#contact").classes("no-underline text-gray-700 hover:text-red-500 transition")
             with ui.row().classes("gap-3 mt-3 md:mt-0"):
                 ui.button("Hospital Login", on_click=lambda: ui.navigate.to("/hospital/login")).props("no-caps flat dense").classes("bg-pink-200 text-red hover:bg-pink-300 rounded-md px-4")

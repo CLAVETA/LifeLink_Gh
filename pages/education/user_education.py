@@ -48,7 +48,8 @@ RESOURCES = {
 # Search Card Section
 # -------------------------
 def search_card(filtered_resources_container):
-    with ui.element("div").classes("flex items-center justify-center w-full px-4 -mt-10 relative z-10"):
+    with ui.element("div").classes("flex justify-center w-full px-4 -mt-10 relative z-10"):
+        ui.label("Search for topics").classes("text-xs text-white text-gray mb-1")
         with ui.row().classes("bg-red-500 w-full text-white rounded-xl p-4 shadow-xl gap-4 items-end flex-wrap"):                 
             selected_topic = ui.select(
                 {
@@ -170,8 +171,7 @@ def education_page():
 
         # Default Resources Section (initially empty)
         with filtered_resources_container:
-            ui.label("Select a category to view related resources.").classes(
-                "text-gray-500 italic"
+            ui.label("Browse categories for resources.").classes("text-gray italic"
             )
         # 3. Main Content Section (Expand Your Knowledge)
         with ui.element("section").classes("w-full py-16 px-5 md:px-20 max-w-screen-xl mx-auto"):
@@ -211,7 +211,7 @@ def education_page():
                         
                                      
                         # Key Information
-                        ui.label("What is SCD?").classes("font-bold text-gray-800 mb-2")
+                        ui.label("What is Sickle Cell Disease (SCD)?").classes("font-bold text-gray-800 mb-2")
                         ui.label("Sickle cell disease is an inherited group of disorders where red blood cells are misshapen (sickle-shaped). These cells break down easily, leading to anemia, pain, and other complications.").classes("text-base text-gray-600 mb-4")
                         
                         ui.label("Treatment and Management:").classes("font-bold text-gray-800 mb-2")
@@ -224,6 +224,8 @@ def education_page():
                             ui.html(f'<i class="fa-solid fa-square-poll-vertical text-red-500 mr-2"></i>{treatment}', sanitize=False).classes("text-base text-gray-600 mb-2 flex items-start")
                             
                         ui.button("Get Comprehensive Guide", on_click=lambda: ui.navigate.to('/sicklecell_education')).props("no-caps").classes("mt-6 w-full bg-red text-white rounded-md px-4 py-2 hover:bg-red-500 transition")
+            ui.button("Add more resources", on_click='') \
+                .classes("mt-10 w-full bg-red-500 text-white rounded-md px-4 py-2 hover:bg-red-600 transition")
 
         # Footer
         with ui.row().classes(
