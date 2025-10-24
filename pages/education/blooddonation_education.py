@@ -80,8 +80,9 @@ def blooddonation_page():
                 with ui.column().classes("items-center w-full max-w-screen-lg text-center py-20 px-5"):
                     ui.label("Blood Donation Education").classes("text-4xl md:text-5xl font-bold text-gray-900 mb-4")
                     ui.label("Your comprehensive resource for insights on the importance and process of blood donation").classes("text-lg text-gray-900 max-w-3xl mx-auto md:text-xl leading-relaxed")
-                with ui.column().classes("flex items-center justify-center w-full"):
-                    search_card()
+            with ui.column().classes("flex items-center justify-center w-full"):
+                filtered_resources_container = ui.column().classes("w-full mt-10 px-10 md:px-20")
+                search_card(filtered_resources_container)
 
             # with ui.column().classes('text-center space-y-2'):
             #     ui.label('Blood Donation Education').classes('text-4xl md:text-5xl font-bold text-gray-900')
@@ -142,20 +143,20 @@ def blooddonation_page():
                 with ui.row().classes('grid grid-cols-1 md:grid-cols-3 gap-8 w-full'):
                     # Donor Stories
                     with ui.card().classes('p-6 shadow-lg rounded-xl text-center'):
-                        ui.image('https://i.imgur.com/Z4O8s0I.png').classes('w-24 h-24 object-cover rounded-full mx-auto mb-4')
+                        ui.image('assets\sickle_resource2.JPG').classes('w-24 h-24 object-cover rounded-full mx-auto mb-4')
                         ui.label('Donor Stories').classes('text-xl text-center font-semibold mb-2 text-gray-800')
                         ui.label('Read inspiring stories from both blood donors and recipients. Understand the real-world impact of your selfless act.').classes('text-gray-600')
                     
                     # Downloadable Guides
                     with ui.card().classes('p-6 shadow-lg rounded-xl text-center'):
-                        ui.image('https://i.imgur.com/Y4V1j9g.png').classes('w-24 h-24 object-cover rounded-full mx-auto mb-4')
+                        ui.image('assets\sickle_resource3.JPG').classes('w-24 h-24 object-cover rounded-full mx-auto mb-4')
                         ui.label('Downloadable Guides').classes('text-xl text-center font-semibold mb-2 text-gray-800')
                         ui.label('Access informative guides on various aspects of blood donation, including FAQs and post-donation care, available for download.').classes('text-gray-600')
 
                     # Videos and Articles
                     with ui.card().classes('p-6 shadow-lg rounded-xl text-center'):
                         with ui.element('div').classes('relative w-24 h-24 mx-auto mb-4'):
-                            ui.image('https://i.imgur.com/7dM4Q1j.png').classes('w-full h-full object-cover rounded-full')
+                            ui.image('assets\sickle_resource4.JPG').classes('w-full h-full object-cover rounded-full')
                             ui.icon('play_circle_outline', size='4xl').classes('absolute inset-0 m-auto text-white text-opacity-80')
                         ui.label('Videos and Articles').classes('text-center text-xl font-semibold mb-2 text-gray-800')
                         ui.label('Explore educational videos and articles covering a range of topics related to blood donation and its importance.').classes('text-gray-600')
@@ -168,27 +169,5 @@ def blooddonation_page():
                     ui.label('Give the Gift of Life').classes('text-4xl md:text-5xl font-bold mb-4')
                     ui.label('Your blood donation can save lives. Learn how you can make a real difference.').classes('text-lg mb-8')
                     ui.button('Find a Donation Center', on_click=lambda: ui.navigate.to('/donor_registration')).classes('bg-white text-red px-8 py-3 font-semibold hover:bg-red-700 transition-colors')
-                         
-                # with ui.row().classes('grid grid-cols-1 md:grid-cols-2 gap-8 items-center w-full'):
-                #     # Portal Info
-                #     with ui.column():
-                #         ui.label('Donor Portal').classes('text-3xl font-bold mb-4')
-                #         ui.label('Welcome, life-saver! Your personal portal to manage your donation journey. Schedule appointments, view your donation history, and track your impact.').classes('mb-6')
-                #         with ui.row().classes('space-x-4'):
-                #             ui.button('Schedule Donation', on_click=lambda: ui.notify('Scheduling...')).classes('bg-white text-red-600 px-6 py-3 font-semibold hover:bg-red-100 transition-colors')
-                #             ui.button('View My Impact', on_click=lambda: ui.notify('Viewing Impact...')).classes('border-2 border-white text-white px-6 py-3 font-semibold hover:bg-white hover:text-red-600 transition-colors')
-                    
-                #     # Appointment Card
-                #     with ui.card().classes('bg-white p-6 rounded-xl shadow-md text-gray-800'):
-                #         ui.label('Your Next Appointment').classes('text-2xl font-bold mb-4 text-center text-gray-900')
-                #         with ui.column().classes('text-center space-y-4'):
-                #             ui.label('You have no upcoming appointments.').classes('text-lg')
-                #             with ui.element('div').classes('flex items-center justify-center p-4 bg-red-100 rounded-lg'):
-                #                 ui.icon('volunteer_activism', size='2xl').classes('text-red-600 mr-3')
-                #                 with ui.column().classes('items-start'):
-                #                     ui.label('Your Blood Type: O+').classes('font-semibold text-gray-800')
-                #                     ui.label('Last Donated: Jan 15, 2024').classes('text-sm text-gray-600')
-                #             ui.label('Ready to donate again on: April 15, 2024').classes('text-gray-600').style('font-weight: 600;')
-
-
+            
         show_footer()
