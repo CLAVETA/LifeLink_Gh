@@ -51,7 +51,7 @@ def search_card(filtered_resources_container):
     with ui.element("div").classes("flex justify-center w-full px-4 -mt-10 relative z-10"):
         ui.label("Search for topics").classes("text-xs text-white text-gray mb-1")
         with ui.row().classes("bg-red-500 w-full text-white rounded-xl p-4 shadow-xl gap-4 items-end flex-wrap"):                 
-            selected_topic = ui.select(
+            ui.select(
                 {
                     "blood": "Blood Donation",
                     "sickle cell": "Understanding Sickle Cell",
